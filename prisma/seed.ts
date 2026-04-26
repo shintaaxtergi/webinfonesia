@@ -93,60 +93,57 @@ async function main() {
   console.log("✅ Tags seeded");
 
   // --- Seed Articles ---
-  const articlesData = [
-    {
-      authorId: editor.id,
-      categoryId: createdCategories["teknologi"],
-      title: "Inovasi Teknologi AI Mengubah Lanskap Bisnis di Indonesia",
-      slug: "inovasi-teknologi-ai-mengubah-lanskap-bisnis-di-indonesia",
-      excerpt: "Adopsi kecerdasan buatan di perusahaan-perusahaan Indonesia meningkat tajam. Efisiensi operasional dan inovasi produk menjadi pendorong utama transformasi ini.",
-      content: "<p>Jakarta, InfoNesia - Perkembangan teknologi kecerdasan buatan (AI) kini semakin tidak terbendung. Di Indonesia, berbagai perusahaan mulai dari startup hingga korporasi besar mulai mengadopsi AI untuk meningkatkan efisiensi dan daya saing mereka.</p><br><p>Menurut laporan terbaru dari Asosiasi Tech Indonesia, tingkat adopsi AI di sektor bisnis meningkat hingga 45% dalam setahun terakhir.</p><br><h3>Tantangan dan Peluang</h3><br><p>Meski potensinya besar, masih ada tantangan seperti minimnya talenta digital yang mumpuni di bidang AI dan kekhawatiran terkait privasi data.</p>",
-      status: "PUBLISHED" as const,
-      isFeatured: true,
-      readTime: 4,
-      publishedAt: new Date("2026-04-19T08:30:00Z"),
-      tagIds: [createdTags["AI"]],
-    },
-    {
-      authorId: editor.id,
-      categoryId: createdCategories["politik"],
-      title: "Pemilu Regional 2026: Antusiasme Pemilih Muda Meningkat Signifikan",
-      slug: "pemilu-regional-2026-antusiasme-pemilih-muda",
-      excerpt: "Generasi Z mendominasi demografi pemilih pada pemilu serentak tahun ini. Kampanye digital menjadi kunci para kandidat.",
-      content: "<p>Surabaya, InfoNesia - Pemilihan kepala daerah serentak 2026 menunjukkan tren baru yang menarik: tingginya tingkat partisipasi pemilih pemula dan pemuda.</p><br><p>Para pengamat politik menilai bahwa isu-isu seperti lapangan kerja, pendidikan, dan lingkungan hidup menjadi perhatian utama para pemilih muda ini.</p>",
-      status: "PUBLISHED" as const,
-      isFeatured: false,
-      readTime: 3,
-      publishedAt: new Date("2026-04-18T14:15:00Z"),
-      tagIds: [createdTags["Pemerintahan"]],
-    },
-    {
-      authorId: writer.id,
-      categoryId: createdCategories["olahraga"],
-      title: "Timnas Garuda Bersiap Menghadapi Kualifikasi Piala Dunia",
-      slug: "timnas-garuda-persiapan-kualifikasi-piala-dunia",
-      excerpt: "Pelatih kepala optimis dengan kondisi fisik para pemain setelah pemusatan latihan intensif di Eropa.",
-      content: "<p>Jakarta, InfoNesia - Skuad Tim Nasional Indonesia telah kembali ke tanah air setelah menjalani pemusatan latihan selama tiga minggu di Eropa.</p><br><p>Pertandingan kualifikasi terdekat akan dilangsungkan di Stadion Utama Gelora Bung Karno.</p>",
-      status: "PUBLISHED" as const,
-      isFeatured: false,
-      readTime: 2,
-      publishedAt: new Date("2026-04-20T09:00:00Z"),
-      tagIds: [createdTags["Sepak Bola"]],
-    },
-    {
-      authorId: editor.id,
-      categoryId: createdCategories["ekonomi"],
-      title: "IHSG Ditutup Menguat Seiring Masuknya Aliran Modal Asing",
-      slug: "ihsg-ditutup-menguat-aliran-modal-asing",
-      excerpt: "Sektor perbankan dan infrastruktur memimpin penguatan indeks harga saham gabungan pada penutupan sesi perdagangan.",
-      content: "<p>Jakarta, InfoNesia - Indeks Harga Saham Gabungan (IHSG) Bursa Efek Indonesia (BEI) ditutup menguat signifikan menyusul rilis data pertumbuhan ekonomi kuartal pertama yang melebihi ekspektasi pasar.</p><br><p>Investor asing mencatatkan pembelian bersih yang cukup besar, menunjukkan kepercayaan yang tinggi terhadap stabilitas ekonomi makro Indonesia.</p>",
-      status: "PUBLISHED" as const,
-      isFeatured: false,
-      readTime: 3,
-      publishedAt: new Date("2026-04-17T16:45:00Z"),
-      tagIds: [createdTags["Pasar Modal"]],
-    },
+  const articlesData: any[] = [];
+  
+  // Base content for procedural generation
+  const baseContent = [
+    "<p>Perkembangan terbaru menunjukkan tren positif yang patut diapresiasi oleh berbagai pihak terkait.</p><br><p>Dalam konferensi pers hari ini, perwakilan resmi menyatakan bahwa langkah-langkah strategis telah disiapkan untuk menghadapi kuartal mendatang.</p><br><h3>Tantangan dan Peluang</h3><br><p>Meski potensinya besar, masih ada tantangan seperti penyesuaian regulasi dan adaptasi pasar.</p>",
+    "<p>Sebuah studi komprehensif baru saja dirilis, menyoroti perubahan signifikan dalam pola perilaku masyarakat.</p><br><p>Data menunjukkan lonjakan partisipasi hingga 30% dibanding periode yang sama tahun lalu.</p>",
+    "<p>Kolaborasi antar lembaga diharapkan mampu mempercepat proses pemulihan dan inovasi di sektor ini.</p><br><p>Berbagai program inisiatif akan mulai digulirkan pada bulan depan dengan target pencapaian yang optimis.</p>",
+    "<p>Para ahli memberikan tanggapan beragam terkait fenomena terbaru ini. Sebagian optimis, namun ada pula yang menyarankan kehati-hatian.</p><br><p>Pemerintah berjanji akan terus memantau situasi dan memberikan dukungan regulasi yang diperlukan.</p>",
+    "<p>Inovasi tiada henti terus ditunjukkan oleh para pelaku industri, memberikan angin segar bagi pertumbuhan ke depan.</p><br><p>Hal ini juga didukung oleh masuknya investasi baru yang memperkuat fundamental sektor terkait.</p>"
   ];
+
+  const baseExcerpts = [
+    "Perkembangan terbaru menunjukkan tren positif yang patut diapresiasi oleh berbagai pihak terkait dan menjadi sorotan utama.",
+    "Sebuah studi komprehensif baru saja dirilis, menyoroti perubahan signifikan dalam pola perilaku masyarakat modern.",
+    "Kolaborasi antar lembaga diharapkan mampu mempercepat proses pemulihan dan inovasi yang berkelanjutan.",
+    "Para ahli memberikan tanggapan beragam terkait fenomena terbaru ini, menyarankan langkah-langkah strategis.",
+    "Inovasi tiada henti terus ditunjukkan oleh para pelaku industri, memberikan angin segar bagi pertumbuhan ekonomi."
+  ];
+
+  const fallBackImages = [
+    "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1557425955-df376b5903c8?q=80&w=1200&auto=format&fit=crop"
+  ];
+
+  // Procedurally generate 5 articles for each category
+  for (const cat of categories) {
+    const categoryId = createdCategories[cat.slug];
+    const tagId = createdTags[tags[Math.floor(Math.random() * tags.length)]];
+
+    for (let i = 1; i <= 5; i++) {
+      const isFeatured = i === 1; // Make the first one featured
+      
+      articlesData.push({
+        authorId: Math.random() > 0.5 ? editor.id : writer.id,
+        categoryId: categoryId,
+        title: `Berita Terkini Seputar ${cat.name} - Bagian ${i}`,
+        slug: `berita-terkini-seputar-${cat.slug}-bagian-${i}`,
+        excerpt: baseExcerpts[i % 5],
+        content: baseContent[i % 5],
+        status: "PUBLISHED" as const,
+        isFeatured: isFeatured,
+        readTime: Math.floor(Math.random() * 5) + 2, // 2 to 6 mins
+        publishedAt: new Date(Date.now() - Math.random() * 10000000000), // Random past date
+        ogImageUrl: fallBackImages[i % 5],
+        tagIds: [tagId],
+      });
+    }
+  }
 
   for (const articleData of articlesData) {
     const { tagIds, ...data } = articleData;
@@ -156,7 +153,7 @@ async function main() {
       create: {
         ...data,
         tags: {
-          create: tagIds.filter(Boolean).map((tagId) => ({ tagId })),
+          create: tagIds.filter(Boolean).map((tagId: string) => ({ tagId })),
         },
       },
     });

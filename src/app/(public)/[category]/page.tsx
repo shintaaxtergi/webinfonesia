@@ -26,6 +26,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       categoryId: category.id,
       status: "PUBLISHED",
     },
+    take: 5,
     orderBy: {
       publishedAt: "desc",
     },
