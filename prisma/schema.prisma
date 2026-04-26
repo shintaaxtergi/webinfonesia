@@ -1,0 +1,248 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  WRITER
+  USER
+}
+
+enum ArticleStatus {
+  DRAFT
+  SUBMITTED
+  REVIEW
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+enum ArticleLabel {
+  NORMAL
+  BREAKING
+  EXCLUSIVE
+  OPINION
+  ANALYSIS
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id             String    @id @default(uuid())
+  username       String    @unique
+  email          String    @unique
+  passwordHash   String?
+  fullName       String
+  role           Role      @default(USER)
+  avatarUrl      String?
+  bio            String?
+  isVerified     Boolean   @default(false)
+  isActive       Boolean   @default(true)
+  oauthProvider  String?
+  oauthId        String?
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  articles         Article[]  @relation("AuthorArticles")
+  editedArticles   Article[]  @relation("EditorArticles")
+  comments         Comment[]
+  bookmarks        Bookmark[]
+  uploadedMedia    Media[]
+  activityLogs     ActivityLog[]
+
+  @@map("users")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  parentId    String?
+  name        String
+  slug        String    @unique
+  description String?
+  color       String?   @default("#C0392B")
+  metaTitle   String?
+  metaDesc    String?
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  parent      Category?   @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[]  @relation("SubCategories")
+  articles    Article[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id         String    @id @default(uuid())
+  name       String    @unique
+  slug       String    @unique
+  usageCount Int       @default(0)
+  createdAt  DateTime  @default(now())
+
+  articles   ArticleTag[]
+
+  @@map("tags")
+}
+
+model Article {
+  id              String        @id @default(uuid())
+  authorId        String
+  categoryId      String?
+  editorId        String?
+  title           String
+  subTitle        String?
+  slug            String        @unique
+  content         String        // HTML content
+  excerpt         String?
+  featuredImageId String?
+  status          ArticleStatus @default(DRAFT)
+  label           ArticleLabel  @default(NORMAL)
+  isFeatured      Boolean       @default(false)
+  viewCount       BigInt        @default(0)
+  readTime        Int           @default(3)
+  metaTitle       String?
+  metaDesc        String?
+  ogImageUrl      String?
+  canonicalUrl    String?
+  publishedAt     DateTime?
+  expiresAt       DateTime?
+  videoUrl        String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  author        User      @relation("AuthorArticles", fields: [authorId], references: [id])
+  editor        User?     @relation("EditorArticles", fields: [editorId], references: [id])
+  category      Category? @relation(fields: [categoryId], references: [id])
+  featuredImage Media?    @relation(fields: [featuredImageId], references: [id])
+  tags          ArticleTag[]
+  comments      Comment[]
+  bookmarks     Bookmark[]
+  revisions     ArticleRevision[]
+
+  @@map("articles")
+}
+
+model ArticleTag {
+  articleId  String
+  tagId      String
+
+  article    Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag        Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@map("article_tags")
+}
+
+model Comment {
+  id        String        @id @default(uuid())
+  articleId String
+  userId    String
+  parentId  String?
+  content   String
+  status    CommentStatus @default(PENDING)
+  likesCount Int          @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  article   Article   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+
+  @@map("comments")
+}
+
+model Media {
+  id         String   @id @default(uuid())
+  uploaderId String
+  filename   String
+  url        String
+  cdnUrl     String?
+  fileType   String
+  size       Int
+  altText    String?
+  width      Int?
+  height     Int?
+  createdAt  DateTime @default(now())
+
+  uploader   User      @relation(fields: [uploaderId], references: [id])
+  articles   Article[]
+
+  @@map("media")
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  articleId String
+  createdAt DateTime @default(now())
+
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, articleId])
+  @@map("bookmarks")
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  categories   String[] // array of category slugs
+  isActive     Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+
+  @@map("newsletter_subscribers")
+}
+
+model ArticleRevision {
+  id            String   @id @default(uuid())
+  articleId     String
+  editorId      String
+  contentSnapshot String
+  revisionNote  String?
+  createdAt     DateTime @default(now())
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@map("article_revisions")
+}
+
+model ActivityLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String
+  entityType String?
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("activity_logs")
+}
+
+model SiteSetting {
+  key         String   @id
+  value       String
+  description String?
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("site_settings")
+}

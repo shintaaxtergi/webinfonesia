@@ -1,0 +1,3743 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRD — Portal Berita & CMS Terintegrasi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0d0d0d;
+      --ink-soft: #2a2a2a;
+      --ink-muted: #5a5a5a;
+      --ink-faint: #9a9a9a;
+      --paper: #faf9f7;
+      --paper-warm: #f3f0ea;
+      --paper-mid: #e8e4da;
+      --accent: #c0392b;
+      --accent-warm: #e74c3c;
+      --accent-muted: #f5c6c2;
+      --gold: #c9a84c;
+      --gold-light: #f0dfa0;
+      --blue: #1a3a5c;
+      --blue-light: #d6e8f7;
+      --green: #1e6b3e;
+      --green-light: #d0ead9;
+      --purple: #4a1f7c;
+      --purple-light: #e2d5f5;
+      --orange: #c45c00;
+      --orange-light: #fde8d0;
+      --border: #d8d4cc;
+      --border-soft: #ece9e2;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+      --radius: 6px;
+      --radius-lg: 12px;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── PRINT STRIPE TOP ── */
+    body::before {
+      content: '';
+      display: block;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--gold) 50%, var(--blue) 100%);
+    }
+
+    /* ── SIDEBAR NAV ── */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100vh;
+      background: var(--ink);
+      color: #fff;
+      overflow-y: auto;
+      z-index: 100;
+      padding: 28px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .sidebar-brand {
+      padding: 0 24px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 12px;
+    }
+
+    .sidebar-brand .brand-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .sidebar-brand .brand-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #fff;
+    }
+
+    .sidebar-brand .brand-version {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.35);
+      margin-top: 4px;
+    }
+
+    .nav-section-label {
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.28);
+      padding: 16px 24px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 24px;
+      color: rgba(255, 255, 255, 0.65);
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 500;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-item:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      border-left-color: var(--gold);
+    }
+
+    .nav-item .nav-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.25);
+      min-width: 20px;
+    }
+
+    .nav-item .nav-emoji {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: 260px;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--ink);
+      color: #fff;
+      padding: 72px 64px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(192, 57, 43, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: 'PRD';
+      position: absolute;
+      bottom: -20px;
+      right: 40px;
+      font-family: var(--font-display);
+      font-size: 200px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.03);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(192, 57, 43, 0.2);
+      border: 1px solid rgba(192, 57, 43, 0.4);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-muted);
+      margin-bottom: 24px;
+    }
+
+    .hero-badge::before {
+      content: '●';
+      font-size: 8px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 900;
+      line-height: 1.12;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 span {
+      color: var(--accent-warm);
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.55);
+      max-width: 560px;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hero-meta-item .meta-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .hero-meta-item .meta-value {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+    }
+
+    /* ── CONTENT WRAPPER ── */
+    .content {
+      max-width: 900px;
+      padding: 64px;
+    }
+
+    /* ── SECTION ── */
+    .section {
+      margin-bottom: 72px;
+      scroll-margin-top: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--ink);
+      position: relative;
+    }
+
+    .section-header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 60px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .section-number {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-muted);
+      border-radius: var(--radius);
+      padding: 3px 8px;
+      margin-top: 6px;
+      white-space: nowrap;
+      letter-spacing: 0.05em;
+    }
+
+    .section-title-wrap {}
+
+    .section-emoji {
+      font-size: 22px;
+      line-height: 1;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .section h2 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── SUBSECTION ── */
+    .subsection {
+      margin-bottom: 32px;
+    }
+
+    .subsection h3 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--ink-soft);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .subsection h3::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 18px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .subsection h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      margin: 16px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: var(--font-mono);
+    }
+
+    /* ── PROSE ── */
+    p {
+      color: var(--ink-soft);
+      margin-bottom: 14px;
+      font-size: 14.5px;
+    }
+
+    /* ── LISTS ── */
+    ul,
+    ol {
+      padding-left: 0;
+      margin-bottom: 16px;
+    }
+
+    li {
+      list-style: none;
+      padding: 5px 0 5px 20px;
+      color: var(--ink-soft);
+      font-size: 14px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 12px;
+      top: 6px;
+    }
+
+    ol {
+      counter-reset: list-counter;
+    }
+
+    ol li {
+      counter-increment: list-counter;
+    }
+
+    ol li::before {
+      content: counter(list-counter, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      top: 7px;
+    }
+
+    li strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* ── TABLES ── */
+    .table-wrap {
+      overflow-x: auto;
+      margin-bottom: 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    thead th {
+      padding: 12px 16px;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border-soft);
+      transition: background 0.1s;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: var(--paper-warm);
+    }
+
+    tbody td {
+      padding: 11px 16px;
+      color: var(--ink-soft);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    tbody td:first-child {
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    /* ── CARDS ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .card h4 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--ink-muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    .card.accent-red {
+      border-top: 3px solid var(--accent);
+    }
+
+    .card.accent-blue {
+      border-top: 3px solid var(--blue);
+    }
+
+    .card.accent-gold {
+      border-top: 3px solid var(--gold);
+    }
+
+    .card.accent-green {
+      border-top: 3px solid var(--green);
+    }
+
+    .card.accent-purple {
+      border-top: 3px solid var(--purple);
+    }
+
+    .card.accent-orange {
+      border-top: 3px solid var(--orange);
+    }
+
+    /* ── PERSONA CARDS ── */
+    .persona-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .persona-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .persona-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+    }
+
+    .persona-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .persona-role {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .persona-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+    }
+
+    .persona-section {
+      padding: 20px 24px;
+      border-right: 1px solid var(--border-soft);
+    }
+
+    .persona-section:last-child {
+      border-right: none;
+    }
+
+    .persona-section-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .persona-section ul li {
+      font-size: 13px;
+      padding: 3px 0 3px 16px;
+    }
+
+    /* ── CALLOUT BOXES ── */
+    .callout {
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .callout-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .callout-body {
+      flex: 1;
+    }
+
+    .callout-title {
+      font-weight: 600;
+      font-size: 13.5px;
+      margin-bottom: 4px;
+      color: inherit;
+    }
+
+    .callout-text {
+      font-size: 13px;
+      margin: 0;
+      line-height: 1.6;
+      opacity: 0.85;
+    }
+
+    .callout.info {
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1px solid #b8d4ec;
+    }
+
+    .callout.warning {
+      background: var(--orange-light);
+      color: var(--orange);
+      border: 1px solid #f5c99a;
+    }
+
+    .callout.success {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid #9ed0b0;
+    }
+
+    .callout.danger {
+      background: var(--accent-muted);
+      color: var(--accent);
+      border: 1px solid #f0a8a0;
+    }
+
+    .callout.purple {
+      background: var(--purple-light);
+      color: var(--purple);
+      border: 1px solid #c8aaf0;
+    }
+
+    .callout.gold {
+      background: var(--gold-light);
+      color: #7a5c10;
+      border: 1px solid #e0c870;
+    }
+
+    /* ── CODE BLOCKS ── */
+    .code-block {
+      background: var(--ink);
+      color: #e8e8e8;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.8;
+      overflow-x: auto;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .code-block .code-label {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .code-block .kw {
+      color: var(--accent-warm);
+    }
+
+    .code-block .str {
+      color: #98d498;
+    }
+
+    .code-block .num {
+      color: var(--gold);
+    }
+
+    .code-block .cm {
+      color: rgba(255, 255, 255, 0.3);
+      font-style: italic;
+    }
+
+    .code-block .field {
+      color: #8ecfe8;
+    }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+    }
+
+    .flow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 90px;
+      text-align: center;
+    }
+
+    .flow-step-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--paper-warm);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+    }
+
+    .flow-step:hover .flow-step-icon {
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .flow-step-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      white-space: nowrap;
+    }
+
+    .flow-step-sub {
+      font-size: 10px;
+      color: var(--ink-faint);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    .flow-arrow {
+      font-size: 18px;
+      color: var(--border);
+      padding: 0 6px;
+      margin-top: -20px;
+    }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 9px;
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+    }
+
+    .badge.red {
+      background: var(--accent-muted);
+      color: var(--accent);
+    }
+
+    .badge.blue {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .badge.green {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .badge.gold {
+      background: var(--gold-light);
+      color: #6e4c10;
+    }
+
+    .badge.purple {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+
+    .badge.orange {
+      background: var(--orange-light);
+      color: var(--orange);
+    }
+
+    .badge.gray {
+      background: var(--paper-mid);
+      color: var(--ink-muted);
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+      margin-bottom: 24px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -28px;
+      top: 8px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--paper);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .timeline-phase {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .timeline-duration {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--paper-warm);
+      border: 1px solid var(--border-soft);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-muted);
+      margin-bottom: 10px;
+    }
+
+    /* ── RISK TABLE ── */
+    .risk-item {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: start;
+      padding: 16px 20px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .risk-desc {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+
+    .risk-desc small {
+      display: block;
+      font-size: 12px;
+      color: var(--ink-faint);
+      font-weight: 400;
+      margin-top: 4px;
+    }
+
+    /* ── ARCH STACK ── */
+    .stack {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stack-layer {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stack-layer-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 8px;
+    }
+
+    .stack-layer-tech {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .stack-layer-alt {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    .stack-layer.frontend {
+      border-left: 3px solid var(--accent);
+    }
+
+    .stack-layer.backend {
+      border-left: 3px solid var(--blue);
+    }
+
+    .stack-layer.db {
+      border-left: 3px solid var(--green);
+    }
+
+    .stack-layer.infra {
+      border-left: 3px solid var(--gold);
+    }
+
+    .stack-layer.cache {
+      border-left: 3px solid var(--purple);
+    }
+
+    .stack-layer.cdn {
+      border-left: 3px solid var(--orange);
+    }
+
+    /* ── DB SCHEMA BLOCK ── */
+    .schema-block {
+      background: var(--paper-warm);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .schema-header {
+      background: var(--ink-soft);
+      color: #fff;
+      padding: 10px 16px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .schema-header span {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 10px;
+    }
+
+    .schema-fields {
+      padding: 12px 0;
+    }
+
+    .schema-field {
+      display: grid;
+      grid-template-columns: 140px 120px 1fr;
+      gap: 8px;
+      padding: 5px 16px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+      align-items: center;
+    }
+
+    .schema-field:last-child {
+      border-bottom: none;
+    }
+
+    .schema-field .f-name {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .schema-field .f-type {
+      color: var(--blue);
+    }
+
+    .schema-field .f-desc {
+      color: var(--ink-muted);
+      font-size: 10.5px;
+    }
+
+    .schema-field .pk {
+      background: var(--gold-light);
+      color: #6e4c10;
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 9px;
+    }
+
+    .schema-field .fk {
+      background: var(--blue-light);
+      color: var(--blue);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 9px;
+    }
+
+    /* ── KPI METRICS ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .kpi-value {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+
+    .kpi-target {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--green);
+      margin-top: 4px;
+    }
+
+    /* ── ROLE PERMISSION ── */
+    .perm-grid {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr 1fr 1fr;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      font-size: 12.5px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+
+    .perm-header {
+      background: var(--ink);
+      color: #fff;
+      padding: 11px 14px;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .perm-header.feature-col {
+      text-align: left;
+    }
+
+    .perm-row {
+      display: contents;
+    }
+
+    .perm-cell {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-soft);
+      border-right: 1px solid var(--border-soft);
+      background: #fff;
+      text-align: center;
+      vertical-align: middle;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .perm-cell:last-child {
+      border-right: none;
+    }
+
+    .perm-cell.feature-name {
+      justify-content: flex-start;
+      font-weight: 500;
+      color: var(--ink-soft);
+      font-size: 13px;
+      background: var(--paper-warm);
+    }
+
+    .perm-check {
+      color: var(--green);
+      font-size: 16px;
+    }
+
+    .perm-partial {
+      color: var(--gold);
+      font-size: 16px;
+    }
+
+    .perm-no {
+      color: var(--border);
+      font-size: 16px;
+    }
+
+    /* ── FUTURE CARD ── */
+    .future-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .future-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .future-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+    }
+
+    .future-phase {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 8px;
+    }
+
+    .future-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+
+    .future-desc {
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ── FOOTER ── */
+    .doc-footer {
+      background: var(--ink);
+      color: rgba(255, 255, 255, 0.4);
+      padding: 32px 64px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-left: 0;
+    }
+
+    .doc-footer strong {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border-soft);
+      margin: 32px 0;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .content {
+        padding: 32px;
+      }
+
+      .hero {
+        padding: 40px 32px;
+      }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .content {
+        padding: 32px 24px;
+      }
+
+      .hero {
+        padding: 48px 24px 40px;
+      }
+
+      .persona-body {
+        grid-template-columns: 1fr;
+      }
+
+      .persona-section {
+        border-right: none;
+        border-bottom: 1px solid var(--border-soft);
+      }
+
+      .persona-section:last-child {
+        border-bottom: none;
+      }
+
+      .schema-field {
+        grid-template-columns: 120px 100px 1fr;
+      }
+
+      .perm-grid {
+        font-size: 11px;
+      }
+
+      .doc-footer {
+        margin-left: 0;
+        padding: 24px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stack {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+════════════════════════════════════════════════════════════ -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-label">Product Requirements Document</div>
+      <div class="brand-title">Portal Berita<br>& CMS Terintegrasi</div>
+      <div class="brand-version">v1.0.0 — April 2026</div>
+    </div>
+
+    <div class="nav-section-label">Pendahuluan</div>
+    <a href="#overview" class="nav-item"><span class="nav-num">01</span><span class="nav-emoji">📌</span> Overview
+      Produk</a>
+    <a href="#goals" class="nav-item"><span class="nav-num">02</span><span class="nav-emoji">🎯</span> Goals &
+      Objectives</a>
+    <a href="#persona" class="nav-item"><span class="nav-num">03</span><span class="nav-emoji">👥</span> User
+      Persona</a>
+
+    <div class="nav-section-label">Fitur & Sistem</div>
+    <a href="#frontend" class="nav-item"><span class="nav-num">04</span><span class="nav-emoji">🧩</span> Fitur
+      Frontend</a>
+    <a href="#cms" class="nav-item"><span class="nav-num">05</span><span class="nav-emoji">⚙️</span> Fitur CMS</a>
+    <a href="#roles" class="nav-item"><span class="nav-num">06</span><span class="nav-emoji">🔐</span> Role &
+      Permission</a>
+    <a href="#userflow" class="nav-item"><span class="nav-num">07</span><span class="nav-emoji">🔄</span> User Flow</a>
+
+    <div class="nav-section-label">Teknis</div>
+    <a href="#architecture" class="nav-item"><span class="nav-num">08</span><span class="nav-emoji">🧱</span> Arsitektur
+      Sistem</a>
+    <a href="#database" class="nav-item"><span class="nav-num">09</span><span class="nav-emoji">🗄️</span> Struktur
+      Database</a>
+    <a href="#uiux" class="nav-item"><span class="nav-num">10</span><span class="nav-emoji">🎨</span> UI/UX
+      Guidelines</a>
+    <a href="#seo" class="nav-item"><span class="nav-num">11</span><span class="nav-emoji">🔍</span> SEO &
+      Performance</a>
+    <a href="#security" class="nav-item"><span class="nav-num">12</span><span class="nav-emoji">🔒</span> Security</a>
+    <a href="#analytics" class="nav-item"><span class="nav-num">13</span><span class="nav-emoji">📊</span> Analytics</a>
+
+    <div class="nav-section-label">Operasional</div>
+    <a href="#devops" class="nav-item"><span class="nav-num">14</span><span class="nav-emoji">🚀</span> Deployment &
+      DevOps</a>
+    <a href="#timeline" class="nav-item"><span class="nav-num">15</span><span class="nav-emoji">📅</span> Timeline</a>
+    <a href="#risks" class="nav-item"><span class="nav-num">16</span><span class="nav-emoji">⚠️</span> Risiko &
+      Mitigasi</a>
+    <a href="#future" class="nav-item"><span class="nav-num">17</span><span class="nav-emoji">🔮</span> Future
+      Enhancement</a>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════
+     MAIN
+════════════════════════════════════════════════════════════ -->
+  <div class="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-badge">Confidential Document</div>
+      <h1>Portal Berita Digital<br><span>& CMS Terintegrasi</span></h1>
+      <p class="hero-sub">Product Requirements Document (PRD) — Panduan komprehensif pengembangan website portal berita
+        modern berstandar enterprise dengan sistem manajemen konten yang efisien.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="meta-label">Versi</span>
+          <span class="meta-value">1.0.0</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="meta-label">Tanggal</span>
+          <span class="meta-value">April 2026</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="meta-label">Status</span>
+          <span class="meta-value">Draft untuk Review</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="meta-label">Penulis</span>
+          <span class="meta-value">Product Team</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="meta-label">Kategori</span>
+          <span class="meta-value">Media & Publishing</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ════════════════════════════════════════════════════
+         01 — OVERVIEW
+    ═════════════════════════════════════════════════════ -->
+      <section id="overview" class="section">
+        <div class="section-header">
+          <div class="section-number">01</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">📌</span>
+            <h2>Overview Produk</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Atribut</th>
+                  <th>Detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nama Produk</td>
+                  <td><strong>NusaPost</strong> — Portal Berita Digital Indonesia</td>
+                </tr>
+                <tr>
+                  <td>Versi</td>
+                  <td>1.0.0 (MVP) → 2.0 (Fase Lanjutan)</td>
+                </tr>
+                <tr>
+                  <td>Kategori</td>
+                  <td>Media Digital / News Portal / CMS Enterprise</td>
+                </tr>
+                <tr>
+                  <td>Platform</td>
+                  <td>Web (Desktop & Mobile) + Progressive Web App (PWA)</td>
+                </tr>
+                <tr>
+                  <td>Target Pasar</td>
+                  <td>Indonesia — Segmen B2C (Pembaca) & B2B (Media House, Perusahaan)</td>
+                </tr>
+                <tr>
+                  <td>Bahasa</td>
+                  <td>Indonesia (Primer), Inggris (Opsional)</td>
+                </tr>
+                <tr>
+                  <td>Lisensi</td>
+                  <td>Proprietary — Internal Use</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Deskripsi Produk</h3>
+          <p><strong>NusaPost</strong> adalah platform portal berita digital berbasis web yang menyajikan informasi
+            aktual, terpercaya, dan berkualitas tinggi kepada masyarakat Indonesia. Dilengkapi dengan sistem CMS
+            (Content Management System) terintegrasi, NusaPost memungkinkan tim editorial untuk memproduksi, mengelola,
+            dan mempublikasikan konten secara efisien dengan alur kerja yang terstruktur.</p>
+          <p>Produk ini dirancang mengikuti standar portal berita besar seperti Detik.com, Kompas.com, dan Liputan6.com
+            — dengan keunggulan dalam kecepatan halaman, optimasi mesin pencari (SEO), dan pengalaman pengguna yang
+            bersih serta intuitif.</p>
+        </div>
+
+        <div class="subsection">
+          <h3>Tujuan Utama</h3>
+          <ul>
+            <li>Membangun platform distribusi berita yang <strong>cepat, modern, dan skalabel</strong></li>
+            <li>Menyediakan tools editorial (CMS) yang <strong>mudah digunakan</strong> tanpa keahlian teknis tinggi
+            </li>
+            <li>Mengoptimalkan visibilitas konten melalui <strong>SEO on-page dan off-page</strong></li>
+            <li>Menciptakan <strong>ekosistem pembaca yang loyal</strong> melalui fitur personalisasi dan engagement
+            </li>
+            <li>Menghasilkan revenue melalui iklan, subscripsi premium, dan konten bersponsor</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Value Proposition</h3>
+          <div class="card-grid">
+            <div class="card accent-red">
+              <span class="card-icon">⚡</span>
+              <h4>Ultra-Fast Performance</h4>
+              <p>Core Web Vitals score 90+. Halaman dimuat dalam &lt;2 detik dengan teknologi SSR dan CDN.</p>
+            </div>
+            <div class="card accent-blue">
+              <span class="card-icon">🔍</span>
+              <h4>SEO-First Architecture</h4>
+              <p>Struktur URL semantis, schema markup, sitemap otomatis, dan meta tags yang dioptimalkan per artikel.
+              </p>
+            </div>
+            <div class="card accent-gold">
+              <span class="card-icon">✍️</span>
+              <h4>Powerful CMS</h4>
+              <p>Workflow editorial lengkap: draft, review, approval, hingga publish dengan notifikasi real-time.</p>
+            </div>
+            <div class="card accent-green">
+              <span class="card-icon">📱</span>
+              <h4>Mobile-First Design</h4>
+              <p>Desain responsif sempurna di semua perangkat. PWA-ready untuk pengalaman seperti aplikasi native.</p>
+            </div>
+            <div class="card accent-purple">
+              <span class="card-icon">🔐</span>
+              <h4>Enterprise Security</h4>
+              <p>HTTPS, proteksi XSS & SQL Injection, autentikasi berlapis, dan enkripsi data sensitif.</p>
+            </div>
+            <div class="card accent-orange">
+              <span class="card-icon">📊</span>
+              <h4>Data-Driven Insights</h4>
+              <p>Dashboard analitik terintegrasi. Lacak traffic, engagement, dan performa konten secara real-time.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         02 — GOALS & OBJECTIVES
+    ═════════════════════════════════════════════════════ -->
+      <section id="goals" class="section">
+        <div class="section-header">
+          <div class="section-number">02</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🎯</span>
+            <h2>Goals & Objectives</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Tujuan Bisnis</h3>
+          <ul>
+            <li><strong>Traffic Organik:</strong> Mencapai 1 juta unique visitor per bulan dalam 12 bulan pertama</li>
+            <li><strong>Revenue:</strong> Monetisasi melalui iklan display, native ads, dan subscripsi premium</li>
+            <li><strong>Brand Awareness:</strong> Menjadi referensi berita terpercaya di segmen regional dalam 18 bulan
+            </li>
+            <li><strong>Konten:</strong> Mempublikasikan minimal 50 artikel per hari dengan kualitas editorial tinggi
+            </li>
+            <li><strong>Retensi:</strong> Mempertahankan return reader rate &gt;35% dalam 6 bulan pertama</li>
+            <li><strong>Partnership:</strong> Menjalin kerjasama dengan minimal 20 media partner atau sumber berita
+              resmi</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Tujuan Teknis</h3>
+          <ul>
+            <li><strong>Performance:</strong> Lighthouse score minimal 90 untuk Performance, Accessibility, dan Best
+              Practices</li>
+            <li><strong>Availability:</strong> Uptime 99.9% dengan SLA yang terdokumentasi</li>
+            <li><strong>Skalabilitas:</strong> Sistem mampu menangani lonjakan traffic hingga 10x normal (breaking news)
+            </li>
+            <li><strong>Load Time:</strong> Time to First Byte (TTFB) &lt;200ms, Largest Contentful Paint (LCP) &lt;2.5
+              detik</li>
+            <li><strong>CMS Usability:</strong> Seorang jurnalis dapat menerbitkan artikel dalam &lt;5 menit tanpa
+              training teknis</li>
+            <li><strong>Security:</strong> Lulus penetration testing dan audit keamanan sebelum launch</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Key Performance Indicators (KPI)</h3>
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-value">1M+</div>
+              <div class="kpi-label">Unique Visitors/Bulan</div>
+              <div class="kpi-target">Target: 12 bulan</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-value">&lt;40%</div>
+              <div class="kpi-label">Bounce Rate</div>
+              <div class="kpi-target">Target: 6 bulan</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-value">4m+</div>
+              <div class="kpi-label">Avg. Session Duration</div>
+              <div class="kpi-target">Target: 3 bulan</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-value">3.5+</div>
+              <div class="kpi-label">Artikel/Visit</div>
+              <div class="kpi-target">Target: 6 bulan</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-value">90+</div>
+              <div class="kpi-label">Lighthouse Score</div>
+              <div class="kpi-target">Target: Launch</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-value">99.9%</div>
+              <div class="kpi-label">Uptime SLA</div>
+              <div class="kpi-target">Target: Ongoing</div>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Metrik</th>
+                  <th>Baseline</th>
+                  <th>Target 3 Bulan</th>
+                  <th>Target 6 Bulan</th>
+                  <th>Target 12 Bulan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Unique Visitors/Bulan</td>
+                  <td>0</td>
+                  <td>100.000</td>
+                  <td>400.000</td>
+                  <td>1.000.000</td>
+                </tr>
+                <tr>
+                  <td>Halaman per Sesi</td>
+                  <td>—</td>
+                  <td>2.0</td>
+                  <td>3.0</td>
+                  <td>3.5</td>
+                </tr>
+                <tr>
+                  <td>Bounce Rate</td>
+                  <td>—</td>
+                  <td>≤55%</td>
+                  <td>≤45%</td>
+                  <td>≤40%</td>
+                </tr>
+                <tr>
+                  <td>Newsletter Subscribers</td>
+                  <td>0</td>
+                  <td>5.000</td>
+                  <td>20.000</td>
+                  <td>80.000</td>
+                </tr>
+                <tr>
+                  <td>Artikel Dipublikasikan/Hari</td>
+                  <td>0</td>
+                  <td>20</td>
+                  <td>40</td>
+                  <td>50+</td>
+                </tr>
+                <tr>
+                  <td>Organic Search Traffic %</td>
+                  <td>—</td>
+                  <td>30%</td>
+                  <td>45%</td>
+                  <td>60%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         03 — USER PERSONA
+    ═════════════════════════════════════════════════════ -->
+      <section id="persona" class="section">
+        <div class="section-header">
+          <div class="section-number">03</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">👥</span>
+            <h2>User Persona</h2>
+          </div>
+        </div>
+
+        <!-- Persona 1: Pembaca -->
+        <div class="persona-card">
+          <div class="persona-header">
+            <div class="persona-avatar">📱</div>
+            <div>
+              <div class="persona-name">Rizky Pratama</div>
+              <div class="persona-role">Persona 01 — Pembaca Aktif</div>
+            </div>
+            <div style="margin-left:auto;text-align:right;">
+              <div style="font-size:12px;color:rgba(255,255,255,0.5)">Usia: 25–35 th</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5)">Karyawan Swasta, Bandung</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-section">
+              <div class="persona-section-title">🎯 Goals</div>
+              <ul>
+                <li>Mendapat berita terkini dengan cepat</li>
+                <li>Konten mudah dibaca di HP saat commuting</li>
+                <li>Bisa simpan artikel favorit</li>
+                <li>Share berita ke WhatsApp/IG mudah</li>
+                <li>Berlangganan topik spesifik</li>
+              </ul>
+            </div>
+            <div class="persona-section">
+              <div class="persona-section-title">😤 Pain Points</div>
+              <ul>
+                <li>Halaman lambat karena penuh iklan</li>
+                <li>Konten clickbait yang mengecewakan</li>
+                <li>Sulit menemukan berita relevan</li>
+                <li>Tidak ada dark mode</li>
+                <li>Pop-up newsletter mengganggu</li>
+              </ul>
+            </div>
+            <div class="persona-section">
+              <div class="persona-section-title">📋 Kebutuhan Utama</div>
+              <ul>
+                <li>Loading cepat &lt;2 detik</li>
+                <li>Desain mobile-friendly</li>
+                <li>Kategori berita yang jelas</li>
+                <li>Fitur bookmark offline</li>
+                <li>Komentar termoderasi</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Persona 2: Jurnalis -->
+        <div class="persona-card">
+          <div class="persona-header" style="background: #1a3a5c;">
+            <div class="persona-avatar">✍️</div>
+            <div>
+              <div class="persona-name">Sari Dewi</div>
+              <div class="persona-role">Persona 02 — Jurnalis / Penulis Konten</div>
+            </div>
+            <div style="margin-left:auto;text-align:right;">
+              <div style="font-size:12px;color:rgba(255,255,255,0.5)">Usia: 23–32 th</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5)">Jurnalis Lapangan, Jakarta</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-section">
+              <div class="persona-section-title">🎯 Goals</div>
+              <ul>
+                <li>Menulis dan publish berita cepat</li>
+                <li>Upload foto/video mudah</li>
+                <li>Melihat performa artikel sendiri</li>
+                <li>Kolaborasi dengan editor online</li>
+                <li>Template konten yang tersedia</li>
+              </ul>
+            </div>
+            <div class="persona-section">
+              <div class="persona-section-title">😤 Pain Points</div>
+              <ul>
+                <li>CMS yang rumit dan lambat</li>
+                <li>Upload media yang sering error</li>
+                <li>Tidak ada notifikasi saat artikel di-reject</li>
+                <li>Tidak ada preview sebelum publish</li>
+                <li>SEO sulit dilakukan tanpa tools</li>
+              </ul>
+            </div>
+            <div class="persona-section">
+              <div class="persona-section-title">📋 Kebutuhan Utama</div>
+              <ul>
+                <li>Rich text editor yang nyaman</li>
+                <li>Auto-save konten berkala</li>
+                <li>SEO helper/suggestion</li>
+                <li>Draft management</li>
+                <li>Feedback dari editor real-time</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Persona 3: Admin/Editor -->
+        <div class="persona-card">
+          <div class="persona-header" style="background: #1e6b3e;">
+            <div class="persona-avatar">⚙️</div>
+            <div>
+              <div class="persona-name">Budi Santoso</div>
+              <div class="persona-role">Persona 03 — Editor / Admin Redaksi</div>
+            </div>
+            <div style="margin-left:auto;text-align:right;">
+              <div style="font-size:12px;color:rgba(255,255,255,0.5)">Usia: 30–45 th</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5)">Editor Senior, Surabaya</div>
+            </div>
+          </div>
+          <div class="persona-body">
+            <div class="persona-section">
+              <div class="persona-section-title">🎯 Goals</div>
+              <ul>
+                <li>Review & approve artikel masuk</li>
+                <li>Manajemen tim jurnalis</li>
+                <li>Monitor performa konten harian</li>
+                <li>Atur jadwal publish konten</li>
+                <li>Kelola moderasi komentar</li>
+              </ul>
+            </div>
+            <div class="persona-section">
+              <div class="persona-section-title">😤 Pain Points</div>
+              <ul>
+                <li>Antrian artikel review tidak teratur</li>
+                <li>Tidak ada dashboard performa</li>
+                <li>Sulit lacak siapa edit apa</li>
+                <li>Moderasi komentar manual dan lambat</li>
+                <li>Tidak ada sistem notifikasi</li>
+              </ul>
+            </div>
+            <div class="persona-section">
+              <div class="persona-section-title">📋 Kebutuhan Utama</div>
+              <ul>
+                <li>Dashboard manajemen lengkap</li>
+                <li>Notifikasi artikel masuk otomatis</li>
+                <li>Audit log semua aktivitas</li>
+                <li>Scheduled publishing</li>
+                <li>Bulk moderation komentar</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         04 — FITUR FRONTEND
+    ═════════════════════════════════════════════════════ -->
+      <section id="frontend" class="section">
+        <div class="section-header">
+          <div class="section-number">04</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🧩</span>
+            <h2>Fitur Utama Website (Frontend)</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Homepage</h3>
+          <p>Homepage berfungsi sebagai pintu utama portal berita, dirancang untuk memaksimalkan CTR dan engagement
+            pembaca sejak detik pertama.</p>
+          <ul>
+            <li><strong>Hero Headline Carousel:</strong> 3–5 berita utama dengan gambar full-width, auto-slide setiap 5
+              detik, navigasi manual, dan badge kategori warna.</li>
+            <li><strong>Breaking News Ticker:</strong> Banner scrolling horizontal di bagian atas halaman yang
+              menampilkan berita terbaru secara real-time dengan update setiap 60 detik.</li>
+            <li><strong>Featured Articles Grid:</strong> Grid 3 kolom berita pilihan editor dengan gambar thumbnail,
+              judul, excerpt singkat, nama penulis, dan waktu publikasi.</li>
+            <li><strong>Kategori Section:</strong> Setiap kategori (Politik, Ekonomi, Olahraga, Teknologi, Hiburan,
+              Kesehatan) memiliki kartu mini dengan artikel terbaru dan tombol "Lihat Semua".</li>
+            <li><strong>Trending Now:</strong> Sidebar atau section horizontal berisi 10 artikel dengan traffic
+              tertinggi dalam 24 jam terakhir.</li>
+            <li><strong>Most Read Today:</strong> Daftar 5 artikel paling banyak dibaca hari ini.</li>
+            <li><strong>Video News:</strong> Embed video berita dengan player HTML5 native yang mendukung YouTube dan
+              Vimeo.</li>
+            <li><strong>Infinite Scroll / Load More:</strong> Artikel di-load secara dinamis saat pengguna scroll ke
+              bawah.</li>
+            <li><strong>Newsletter CTA:</strong> Widget subscription newsletter yang tidak invasif di bagian bawah
+              homepage.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Halaman Kategori Berita</h3>
+          <ul>
+            <li><strong>Header Kategori:</strong> Nama kategori dengan deskripsi singkat dan ikon representatif.</li>
+            <li><strong>Filter & Sorting:</strong> Filter berdasarkan sub-kategori, tanggal, dan urutan
+              (terbaru/terpopuler).</li>
+            <li><strong>Artikel Grid:</strong> Layout grid/list yang bisa di-toggle oleh pengguna.</li>
+            <li><strong>Pagination & Infinite Scroll:</strong> Keduanya tersedia dengan pilihan pengguna.</li>
+            <li><strong>Tag Cloud:</strong> Daftar tag populer dalam kategori tersebut.</li>
+            <li><strong>Sub-Kategori Navigation:</strong> Navigasi tab horizontal untuk sub-kategori (misal: Politik →
+              Nasional, Internasional, Daerah).</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Halaman Detail Artikel</h3>
+          <ul>
+            <li><strong>Artikel Header:</strong> Judul besar, sub-judul (deck), byline penulis, tanggal/waktu publish,
+              kategori, dan estimasi waktu baca.</li>
+            <li><strong>Hero Image:</strong> Gambar utama dengan caption lengkap dan credit foto.</li>
+            <li><strong>Body Konten:</strong> Rich text dengan heading (H2–H4), paragraf, blockquote, tabel, gambar
+              inline, embed video/tweet/Instagram, dan list terformat.</li>
+            <li><strong>Progress Bar:</strong> Bar tipis di atas halaman yang menunjukkan progres pembacaan artikel.
+            </li>
+            <li><strong>Social Share:</strong> Tombol share floating ke WhatsApp, Facebook, Twitter/X, Telegram, dan
+              salin link.</li>
+            <li><strong>Bookmark:</strong> Tombol simpan artikel ke koleksi pribadi (perlu login).</li>
+            <li><strong>Font Size Toggle:</strong> Pilihan ukuran teks (kecil, sedang, besar) untuk aksesibilitas.</li>
+            <li><strong>Print Mode:</strong> Tombol cetak yang mengoptimalkan layout untuk printer.</li>
+            <li><strong>Tags:</strong> Daftar tag artikel yang bisa diklik untuk filter konten.</li>
+            <li><strong>Related Articles:</strong> 4–6 artikel terkait berdasarkan kategori dan tag.</li>
+            <li><strong>Author Box:</strong> Profil singkat penulis dengan foto, bio, dan link ke profil penulis.</li>
+            <li><strong>Koreksi & Klarifikasi:</strong> Seksi yang muncul jika ada pembaruan/koreksi pada artikel.</li>
+            <li><strong>Komentar:</strong> Sistem komentar terintegrasi dengan moderasi dan threading (reply).</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Fitur Search</h3>
+          <ul>
+            <li><strong>Global Search Bar:</strong> Tersedia di navbar dengan shortcut keyboard (Ctrl+K / Cmd+K).</li>
+            <li><strong>Autocomplete:</strong> Suggestion real-time saat mengetik dengan debounce 300ms.</li>
+            <li><strong>Hasil Search:</strong> Halaman hasil dengan highlight kata kunci, filter lanjutan (tanggal,
+              kategori, penulis), dan sorting.</li>
+            <li><strong>Search History:</strong> Menyimpan histori pencarian lokal di browser.</li>
+            <li><strong>No Result State:</strong> Halaman error graceful dengan rekomendasi pencarian populer.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Fitur Komentar Pengguna</h3>
+          <ul>
+            <li><strong>Login Requirement:</strong> Komentar hanya bisa dibuat oleh pengguna terdaftar (sign-in via
+              email atau Google OAuth).</li>
+            <li><strong>Thread/Reply:</strong> Komentar bisa dibalas hingga 2 level kedalaman.</li>
+            <li><strong>Like/Dislike:</strong> Pengguna bisa menyukai komentar.</li>
+            <li><strong>Report:</strong> Tombol laporan komentar untuk moderasi komunitas.</li>
+            <li><strong>Moderasi:</strong> Komentar baru masuk ke antrian review sebelum tampil publik (opsional:
+              auto-approve untuk pengguna terverifikasi).</li>
+            <li><strong>Sorting:</strong> Urutkan komentar berdasarkan terbaru, terpopuler, atau terlama.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Bookmark & Newsletter</h3>
+          <ul>
+            <li><strong>Bookmark:</strong> Simpan artikel dengan kategorisasi koleksi pribadi. Tersedia offline via PWA
+              cache.</li>
+            <li><strong>Reading History:</strong> Riwayat artikel yang pernah dibaca, bisa dihapus.</li>
+            <li><strong>Newsletter:</strong> Subscribe berdasarkan kategori atau topik. Email digest harian/mingguan.
+              Opt-out mudah.</li>
+            <li><strong>Push Notification:</strong> Web push notification untuk breaking news (dengan izin pengguna).
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         05 — FITUR CMS
+    ═════════════════════════════════════════════════════ -->
+      <section id="cms" class="section">
+        <div class="section-header">
+          <div class="section-number">05</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">⚙️</span>
+            <h2>Fitur CMS (Backend)</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Dashboard Admin</h3>
+          <ul>
+            <li><strong>Overview Metrics:</strong> Widget real-time untuk total artikel, artikel pending review,
+              komentar baru, traffic hari ini, dan top artikel.</li>
+            <li><strong>Activity Feed:</strong> Log aktivitas terbaru seluruh tim (artikel dibuat, diedit, dipublish).
+            </li>
+            <li><strong>Quick Actions:</strong> Shortcut ke "Buat Artikel Baru", "Review Pending", "Moderasi Komentar".
+            </li>
+            <li><strong>Notifikasi System:</strong> Bell notification untuk event penting (artikel submit, komentar
+              dilaporkan, error sistem).</li>
+            <li><strong>Grafik Traffic:</strong> Chart interaktif traffic 7/30 hari dengan breakdown per kategori.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Manajemen Artikel (CRUD)</h3>
+          <ul>
+            <li><strong>Rich Text Editor:</strong> WYSIWYG editor (berbasis TipTap/ProseMirror/TinyMCE) dengan fitur:
+              heading, bold/italic, link, gambar inline, video embed, blockquote, tabel, code block, dan daftar.</li>
+            <li><strong>Auto-Save:</strong> Konten tersimpan otomatis setiap 30 detik ke draft.</li>
+            <li><strong>Revision History:</strong> Lacak semua perubahan artikel dengan rollback ke versi sebelumnya.
+            </li>
+            <li><strong>Featured Image:</strong> Upload atau pilih dari media library. Crop online sebelum upload.</li>
+            <li><strong>Preview Mode:</strong> Preview artikel persis seperti tampilan di website sebelum publish.</li>
+            <li><strong>Scheduled Publish:</strong> Atur tanggal dan waktu publikasi otomatis.</li>
+            <li><strong>Status Management:</strong> Draft → Submitted → In Review → Approved → Published / Rejected.
+            </li>
+            <li><strong>Article Clone:</strong> Duplikat artikel sebagai template untuk format serupa.</li>
+            <li><strong>Artikel Unggulan:</strong> Tandai artikel sebagai "Featured" untuk tampil di posisi Hero.</li>
+            <li><strong>Label Khusus:</strong> Breaking News, Eksklusif, Analisis, Opini, Advertorial.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Manajemen Kategori & Tag</h3>
+          <ul>
+            <li><strong>Kategori Hierarki:</strong> Kategori utama dan sub-kategori (2 level). CRUD lengkap dengan slug
+              otomatis.</li>
+            <li><strong>Tag System:</strong> Tambah/edit/hapus tag. Tag cloud dengan frekuensi penggunaan.</li>
+            <li><strong>Merge Tags:</strong> Gabungkan tag duplikat yang mirip.</li>
+            <li><strong>SEO per Kategori:</strong> Atur meta title, meta description, dan gambar OG per kategori.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Manajemen User</h3>
+          <ul>
+            <li><strong>User List:</strong> Tabel pengguna dengan filter role, status (aktif/nonaktif), dan tanggal
+              bergabung.</li>
+            <li><strong>Invite System:</strong> Undang penulis/editor baru via email dengan link undangan.</li>
+            <li><strong>Role Assignment:</strong> Ubah role pengguna (Admin / Editor / Writer).</li>
+            <li><strong>User Profile:</strong> Edit nama, bio, foto profil, sosial media links.</li>
+            <li><strong>Activity Log per User:</strong> Riwayat artikel yang dibuat, diedit, dan dipublish oleh setiap
+              user.</li>
+            <li><strong>Suspend/Ban User:</strong> Nonaktifkan akun pengguna bermasalah.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Upload Media</h3>
+          <ul>
+            <li><strong>Media Library:</strong> Galeri semua file yang sudah diupload dengan pencarian dan filter
+              (gambar/video/dokumen).</li>
+            <li><strong>Drag & Drop Upload:</strong> Upload multiple file sekaligus.</li>
+            <li><strong>Auto-Compression:</strong> Gambar dikompresi otomatis menggunakan WebP dengan kualitas yang
+              dapat dikonfigurasi.</li>
+            <li><strong>Auto-Resize:</strong> Gambar di-resize otomatis untuk berbagai breakpoint (thumbnail, medium,
+              large, og-image).</li>
+            <li><strong>Alt Text Wajib:</strong> Form input alt text untuk setiap gambar (aksesibilitas + SEO).</li>
+            <li><strong>CDN Integration:</strong> File media di-serve via CDN untuk loading cepat.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>SEO Tools</h3>
+          <ul>
+            <li><strong>SEO Score:</strong> Indikator skor SEO real-time saat menulis (mirip Yoast SEO) —
+              Merah/Kuning/Hijau.</li>
+            <li><strong>Meta Title & Description:</strong> Preview tampilan di Google SERP saat mengedit.</li>
+            <li><strong>Custom Slug:</strong> Edit slug URL dengan validasi unik.</li>
+            <li><strong>OG Tags:</strong> Atur judul, deskripsi, dan gambar untuk Open Graph (Facebook/WhatsApp) dan
+              Twitter Card.</li>
+            <li><strong>Canonical URL:</strong> Atur canonical untuk menghindari duplicate content.</li>
+            <li><strong>Schema Markup:</strong> Generate JSON-LD otomatis (NewsArticle, BreadcrumbList, Organization).
+            </li>
+            <li><strong>Sitemap:</strong> XML sitemap otomatis yang diupdate setiap ada publish baru.</li>
+            <li><strong>Robots.txt:</strong> Konfigurasi robots.txt dari panel admin.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Moderasi Komentar</h3>
+          <ul>
+            <li><strong>Antrian Moderasi:</strong> Semua komentar baru masuk antrian sebelum publik.</li>
+            <li><strong>Auto-Filter:</strong> Filter otomatis kata-kata tidak pantas menggunakan daftar hitam yang bisa
+              dikonfigurasi.</li>
+            <li><strong>Bulk Action:</strong> Approve/Reject/Delete banyak komentar sekaligus.</li>
+            <li><strong>Laporan Komentar:</strong> Komentar yang dilaporkan pembaca otomatis masuk antrian review.</li>
+            <li><strong>Ban User Komentar:</strong> Blokir user tertentu dari kemampuan berkomentar.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Analytics Dashboard CMS</h3>
+          <ul>
+            <li><strong>Top Artikel:</strong> Ranking artikel berdasarkan pageview, waktu baca rata-rata, dan share
+              sosial.</li>
+            <li><strong>Performa Penulis:</strong> Statistik per jurnalis (artikel dipublish, total view, rata-rata
+              waktu baca).</li>
+            <li><strong>Traffic Sumber:</strong> Breakdown traffic dari Organic Search, Direct, Social, Referral.</li>
+            <li><strong>Kategori Performance:</strong> Perbandingan engagement antar kategori.</li>
+            <li><strong>Export Report:</strong> Download laporan dalam format CSV/PDF.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         06 — ROLE & PERMISSION
+    ═════════════════════════════════════════════════════ -->
+      <section id="roles" class="section">
+        <div class="section-header">
+          <div class="section-number">06</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🔐</span>
+            <h2>Role & Permission System</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Definisi Role</h3>
+          <div class="card-grid">
+            <div class="card accent-red">
+              <span class="card-icon">👑</span>
+              <h4>Admin (Super Admin)</h4>
+              <p>Akses penuh ke seluruh sistem. Mengelola user, konfigurasi sistem, dan semua konten. Bertanggung jawab
+                atas operasional platform secara keseluruhan.</p>
+            </div>
+            <div class="card accent-blue">
+              <span class="card-icon">✏️</span>
+              <h4>Editor</h4>
+              <p>Review dan approve artikel dari writer. Bisa publish langsung. Mengelola kategori, tag, dan layout
+                editorial. Akses analitik tim.</p>
+            </div>
+            <div class="card accent-gold">
+              <span class="card-icon">📝</span>
+              <h4>Writer (Jurnalis)</h4>
+              <p>Membuat dan mengedit artikel milik sendiri. Submit ke editor untuk review. Tidak bisa langsung publish
+                tanpa persetujuan editor.</p>
+            </div>
+            <div class="card accent-green">
+              <span class="card-icon">👤</span>
+              <h4>Registered User</h4>
+              <p>Pembaca terdaftar. Bisa komentar, bookmark artikel, dan berlangganan newsletter. Tidak memiliki akses
+                ke CMS backend.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Matrix Izin Akses</h3>
+          <div class="perm-grid">
+            <div class="perm-header feature-col" style="background:#0d0d0d;">Fitur / Aksi</div>
+            <div class="perm-header" style="background:#c0392b;">Admin</div>
+            <div class="perm-header" style="background:#1a3a5c;">Editor</div>
+            <div class="perm-header" style="background:#c9a84c;color:#0d0d0d;">Writer</div>
+            <div class="perm-header" style="background:#1e6b3e;">User</div>
+
+            <div class="perm-cell feature-name">Buat Artikel Baru</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Edit Artikel Sendiri</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Edit Artikel Orang Lain</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Publish Artikel</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Hapus Artikel</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-partial">~</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Kelola Kategori & Tag</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Moderasi Komentar</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Kelola User</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Lihat Analytics</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-partial">~</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Konfigurasi Sistem</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+            <div class="perm-cell"><span class="perm-no">✗</span></div>
+
+            <div class="perm-cell feature-name">Bookmark Artikel</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+
+            <div class="perm-cell feature-name">Beri Komentar</div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+            <div class="perm-cell"><span class="perm-check">✓</span></div>
+          </div>
+          <p style="font-size:12px;color:var(--ink-faint);">✓ = Akses Penuh &nbsp;|&nbsp; ~ = Akses Terbatas
+            &nbsp;|&nbsp; ✗ = Tidak Ada Akses</p>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         07 — USER FLOW
+    ═════════════════════════════════════════════════════ -->
+      <section id="userflow" class="section">
+        <div class="section-header">
+          <div class="section-number">07</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🔄</span>
+            <h2>User Flow</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Flow 1: Pembaca Membaca Berita</h3>
+          <div class="flow">
+            <div class="flow-step">
+              <div class="flow-step-icon">🌐</div>
+              <div class="flow-step-label">Landing di</div>
+              <div class="flow-step-sub">Homepage</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">📰</div>
+              <div class="flow-step-label">Browse Artikel</div>
+              <div class="flow-step-sub">Kategori / Search</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">📖</div>
+              <div class="flow-step-label">Baca Artikel</div>
+              <div class="flow-step-sub">Detail Page</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">📤</div>
+              <div class="flow-step-label">Share / Bookmark</div>
+              <div class="flow-step-sub">Sosmed / Simpan</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">🔗</div>
+              <div class="flow-step-label">Related Articles</div>
+              <div class="flow-step-sub">Lanjut Baca</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">💬</div>
+              <div class="flow-step-label">Komentar</div>
+              <div class="flow-step-sub">Login Dulu</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Flow 2: Jurnalis Membuat & Submit Artikel</h3>
+          <div class="flow">
+            <div class="flow-step">
+              <div class="flow-step-icon">🔑</div>
+              <div class="flow-step-label">Login CMS</div>
+              <div class="flow-step-sub">Writer</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">✍️</div>
+              <div class="flow-step-label">Buat Draft</div>
+              <div class="flow-step-sub">Rich Editor</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">🖼️</div>
+              <div class="flow-step-label">Upload Media</div>
+              <div class="flow-step-sub">Gambar/Video</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">🔍</div>
+              <div class="flow-step-label">Isi SEO Info</div>
+              <div class="flow-step-sub">Meta + Slug</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">👁️</div>
+              <div class="flow-step-label">Preview Artikel</div>
+              <div class="flow-step-sub">Cek Layout</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">📤</div>
+              <div class="flow-step-label">Submit Review</div>
+              <div class="flow-step-sub">Ke Editor</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Flow 3: Editor Review & Approval</h3>
+          <div class="flow">
+            <div class="flow-step">
+              <div class="flow-step-icon">🔔</div>
+              <div class="flow-step-label">Notifikasi</div>
+              <div class="flow-step-sub">Artikel Masuk</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">📋</div>
+              <div class="flow-step-label">Buka Queue</div>
+              <div class="flow-step-sub">Review List</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">📝</div>
+              <div class="flow-step-label">Review Konten</div>
+              <div class="flow-step-sub">Edit Jika Perlu</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">✅</div>
+              <div class="flow-step-label">Approve</div>
+              <div class="flow-step-sub">atau Reject</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">📅</div>
+              <div class="flow-step-label">Jadwal/Publish</div>
+              <div class="flow-step-sub">Langsung / Terjadwal</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">🌍</div>
+              <div class="flow-step-label">Live di Website</div>
+              <div class="flow-step-sub">Publik</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Flow 4: Registrasi Pengguna Baru</h3>
+          <div class="flow">
+            <div class="flow-step">
+              <div class="flow-step-icon">👋</div>
+              <div class="flow-step-label">Kunjungi Site</div>
+              <div class="flow-step-sub">Guest</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">📝</div>
+              <div class="flow-step-label">Klik Register</div>
+              <div class="flow-step-sub">Form Sign Up</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">📧</div>
+              <div class="flow-step-label">Verifikasi Email</div>
+              <div class="flow-step-sub">Cek Inbox</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">✅</div>
+              <div class="flow-step-label">Akun Aktif</div>
+              <div class="flow-step-sub">Login Berhasil</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">⚙️</div>
+              <div class="flow-step-label">Isi Profil</div>
+              <div class="flow-step-sub">Preferensi Topik</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step">
+              <div class="flow-step-icon">🎉</div>
+              <div class="flow-step-label">Baca & Engage</div>
+              <div class="flow-step-sub">Komentar / Simpan</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         08 — ARSITEKTUR SISTEM
+    ═════════════════════════════════════════════════════ -->
+      <section id="architecture" class="section">
+        <div class="section-header">
+          <div class="section-number">08</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🧱</span>
+            <h2>Arsitektur Sistem</h2>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">ℹ️</span>
+          <div class="callout-body">
+            <div class="callout-title">Pendekatan Arsitektur</div>
+            <p class="callout-text">NusaPost menggunakan arsitektur <strong>Jamstack + Headless CMS</strong> dengan
+              pemisahan jelas antara frontend (Next.js SSR/SSG) dan backend API (Node.js + REST). Pendekatan ini
+              memaksimalkan performa, skalabilitas, dan fleksibilitas dalam pengembangan.</p>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Technology Stack</h3>
+          <div class="stack">
+            <div class="stack-layer frontend">
+              <div class="stack-layer-label">Frontend</div>
+              <div class="stack-layer-tech">Next.js 14</div>
+              <div class="stack-layer-alt">React 18 + TypeScript</div>
+            </div>
+            <div class="stack-layer frontend">
+              <div class="stack-layer-label">Styling</div>
+              <div class="stack-layer-tech">Tailwind CSS</div>
+              <div class="stack-layer-alt">+ CSS Modules</div>
+            </div>
+            <div class="stack-layer backend">
+              <div class="stack-layer-label">Backend API</div>
+              <div class="stack-layer-tech">Node.js</div>
+              <div class="stack-layer-alt">Express.js / Fastify</div>
+            </div>
+            <div class="stack-layer backend">
+              <div class="stack-layer-label">Alternatif</div>
+              <div class="stack-layer-tech">Laravel 11</div>
+              <div class="stack-layer-alt">PHP 8.3 + REST API</div>
+            </div>
+            <div class="stack-layer db">
+              <div class="stack-layer-label">Database Utama</div>
+              <div class="stack-layer-tech">PostgreSQL 16</div>
+              <div class="stack-layer-alt">MySQL 8 (alternatif)</div>
+            </div>
+            <div class="stack-layer cache">
+              <div class="stack-layer-label">Cache</div>
+              <div class="stack-layer-tech">Redis 7</div>
+              <div class="stack-layer-alt">Session + Query Cache</div>
+            </div>
+            <div class="stack-layer cdn">
+              <div class="stack-layer-label">Search Engine</div>
+              <div class="stack-layer-tech">Elasticsearch</div>
+              <div class="stack-layer-alt">Atau Meilisearch</div>
+            </div>
+            <div class="stack-layer infra">
+              <div class="stack-layer-label">Object Storage</div>
+              <div class="stack-layer-tech">AWS S3</div>
+              <div class="stack-layer-alt">Cloudflare R2 (alternatif)</div>
+            </div>
+            <div class="stack-layer cdn">
+              <div class="stack-layer-label">CDN</div>
+              <div class="stack-layer-tech">Cloudflare</div>
+              <div class="stack-layer-alt">AWS CloudFront</div>
+            </div>
+            <div class="stack-layer infra">
+              <div class="stack-layer-label">Hosting</div>
+              <div class="stack-layer-tech">AWS / GCP</div>
+              <div class="stack-layer-alt">Vercel (Frontend)</div>
+            </div>
+            <div class="stack-layer backend">
+              <div class="stack-layer-label">Auth</div>
+              <div class="stack-layer-tech">JWT + OAuth 2.0</div>
+              <div class="stack-layer-alt">Google / Facebook</div>
+            </div>
+            <div class="stack-layer db">
+              <div class="stack-layer-label">Email Service</div>
+              <div class="stack-layer-tech">SendGrid</div>
+              <div class="stack-layer-alt">Mailgun (alternatif)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Diagram Alur Sistem</h3>
+          <div class="code-block">
+            <span class="code-label">Architecture Diagram</span>
+            <span class="cm">┌─────────────────────────────────────────────────────────────────────┐</span>
+            <span class="cm">│ INTERNET / CDN (Cloudflare) │</span>
+            <span class="cm">└──────────────────────────────────┬──────────────────────────────────┘</span>
+            │
+            ┌────────────────────────┼────────────────────────┐
+            │ │ │
+            <span class="field">┌──────────────────┐ ┌──────────────────┐ ┌──────────────────────┐</span>
+            <span class="field">│ Next.js Frontend│ │ CMS Dashboard │ │ Public API (REST) │</span>
+            <span class="field">│ (Vercel / SSR) │ │ (React SPA) │ │ /api/v1/... │</span>
+            <span class="field">└────────┬─────────┘ └────────┬─────────┘ └──────────┬───────────┘</span>
+            │ │ │
+            <span class="cm"> └──────────────────────┴────────────────────────┘</span>
+            <span class="cm">│</span>
+            <span class="str">┌─────────────────────────────┐</span>
+            <span class="str">│ API Gateway / Load Bal. │</span>
+            <span class="str">│ (Nginx / AWS ALB) │</span>
+            <span class="str">└──────────────┬──────────────┘</span>
+            │
+            ┌──────────────────────┼──────────────────────┐
+            │ │ │
+            <span class="kw">┌─────────────────┐ ┌─────────────────┐ ┌─────────────────────┐</span>
+            <span class="kw">│ Auth Service │ │ Content Service │ │ Media Service │</span>
+            <span class="kw">│ (Node.js) │ │ (Node.js) │ │ (Upload + CDN) │</span>
+            <span class="kw">└────────┬────────┘ └────────┬────────┘ └──────────┬──────────┘</span>
+            │ │ │
+            <span class="num"> ┌────┴────┐ ┌────┴────┐ ┌─────┴─────┐</span>
+            <span class="num"> │ Redis │ │PostgreSQL│ │ AWS S3 │</span>
+            <span class="num"> │ (Cache) │ │ (Main) │ │ (Storage) │</span>
+            <span class="num"> └─────────┘ └────┬────┘ └───────────┘</span>
+            │
+            <span class="field">┌──────────┴───────────┐</span>
+            <span class="field">│ Elasticsearch │</span>
+            <span class="field">│ (Full-text Search) │</span>
+            <span class="field">└───────────────────────┘</span>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>API Design</h3>
+          <ul>
+            <li><strong>Protocol:</strong> REST API dengan JSON response. GraphQL dipertimbangkan untuk fase 2.</li>
+            <li><strong>Versioning:</strong> URL-based versioning: <code
+                style="background:var(--paper-warm);padding:1px 6px;border-radius:4px;font-family:var(--font-mono);font-size:12px;">/api/v1/</code>
+            </li>
+            <li><strong>Authentication:</strong> Bearer Token (JWT) di Authorization header.</li>
+            <li><strong>Rate Limiting:</strong> 100 req/menit untuk pengguna biasa, 1000 req/menit untuk CMS.</li>
+            <li><strong>Pagination:</strong> Cursor-based pagination untuk performa optimal pada data besar.</li>
+            <li><strong>Response Format:</strong> Standar envelope: <code
+                style="background:var(--paper-warm);padding:1px 6px;border-radius:4px;font-family:var(--font-mono);font-size:12px;">{"data": {}, "meta": {}, "errors": []}</code>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         09 — DATABASE
+    ═════════════════════════════════════════════════════ -->
+      <section id="database" class="section">
+        <div class="section-header">
+          <div class="section-number">09</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🗄️</span>
+            <h2>Struktur Database</h2>
+          </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="schema-block">
+          <div class="schema-header">📁 TABLE: <span>users</span></div>
+          <div class="schema-fields">
+            <div class="schema-field"><span class="f-name">id <span class="pk">PK</span></span><span
+                class="f-type">UUID</span><span class="f-desc">Primary key, auto-generated</span></div>
+            <div class="schema-field"><span class="f-name">username</span><span class="f-type">VARCHAR(50)</span><span
+                class="f-desc">Unique, lowercase, no spaces</span></div>
+            <div class="schema-field"><span class="f-name">email</span><span class="f-type">VARCHAR(255)</span><span
+                class="f-desc">Unique, terverifikasi</span></div>
+            <div class="schema-field"><span class="f-name">password_hash</span><span
+                class="f-type">VARCHAR(255)</span><span class="f-desc">bcrypt hash, nullable (OAuth users)</span></div>
+            <div class="schema-field"><span class="f-name">full_name</span><span class="f-type">VARCHAR(100)</span><span
+                class="f-desc">Nama lengkap pengguna</span></div>
+            <div class="schema-field"><span class="f-name">role</span><span class="f-type">ENUM</span><span
+                class="f-desc">'admin' | 'editor' | 'writer' | 'user'</span></div>
+            <div class="schema-field"><span class="f-name">avatar_url</span><span class="f-type">TEXT</span><span
+                class="f-desc">URL foto profil</span></div>
+            <div class="schema-field"><span class="f-name">bio</span><span class="f-type">TEXT</span><span
+                class="f-desc">Bio singkat penulis</span></div>
+            <div class="schema-field"><span class="f-name">is_verified</span><span class="f-type">BOOLEAN</span><span
+                class="f-desc">Status verifikasi email</span></div>
+            <div class="schema-field"><span class="f-name">is_active</span><span class="f-type">BOOLEAN</span><span
+                class="f-desc">Status akun aktif/suspend</span></div>
+            <div class="schema-field"><span class="f-name">oauth_provider</span><span
+                class="f-type">VARCHAR(50)</span><span class="f-desc">google | facebook | null</span></div>
+            <div class="schema-field"><span class="f-name">oauth_id</span><span class="f-type">VARCHAR(255)</span><span
+                class="f-desc">ID dari OAuth provider</span></div>
+            <div class="schema-field"><span class="f-name">last_login_at</span><span
+                class="f-type">TIMESTAMP</span><span class="f-desc">Waktu login terakhir</span></div>
+            <div class="schema-field"><span class="f-name">created_at</span><span class="f-type">TIMESTAMP</span><span
+                class="f-desc">Waktu registrasi</span></div>
+            <div class="schema-field"><span class="f-name">updated_at</span><span class="f-type">TIMESTAMP</span><span
+                class="f-desc">Waktu update terakhir</span></div>
+          </div>
+        </div>
+
+        <!-- Articles Table -->
+        <div class="schema-block">
+          <div class="schema-header">📁 TABLE: <span>articles</span></div>
+          <div class="schema-fields">
+            <div class="schema-field"><span class="f-name">id <span class="pk">PK</span></span><span
+                class="f-type">UUID</span><span class="f-desc">Primary key</span></div>
+            <div class="schema-field"><span class="f-name">author_id <span class="fk">FK</span></span><span
+                class="f-type">UUID</span><span class="f-desc">→ users.id</span></div>
+            <div class="schema-field"><span class="f-name">category_id <span class="fk">FK</span></span><span
+                class="f-type">UUID</span><span class="f-desc">→ categories.id</span></div>
+            <div class="schema-field"><span class="f-name">editor_id <span class="fk">FK</span></span><span
+                class="f-type">UUID</span><span class="f-desc">→ users.id (yang approve)</span></div>
+            <div class="schema-field"><span class="f-name">title</span><span class="f-type">VARCHAR(500)</span><span
+                class="f-desc">Judul artikel</span></div>
+            <div class="schema-field"><span class="f-name">sub_title</span><span class="f-type">VARCHAR(500)</span><span
+                class="f-desc">Sub judul / deck</span></div>
+            <div class="schema-field"><span class="f-name">slug</span><span class="f-type">VARCHAR(500)</span><span
+                class="f-desc">URL-friendly, unik</span></div>
+            <div class="schema-field"><span class="f-name">content</span><span class="f-type">JSONB/TEXT</span><span
+                class="f-desc">Konten artikel dalam format JSON (Tiptap doc)</span></div>
+            <div class="schema-field"><span class="f-name">excerpt</span><span class="f-type">TEXT</span><span
+                class="f-desc">Ringkasan singkat (~160 karakter)</span></div>
+            <div class="schema-field"><span class="f-name">featured_image_id <span class="fk">FK</span></span><span
+                class="f-type">UUID</span><span class="f-desc">→ media.id</span></div>
+            <div class="schema-field"><span class="f-name">status</span><span class="f-type">ENUM</span><span
+                class="f-desc">'draft' | 'submitted' | 'review' | 'published' | 'rejected' | 'archived'</span></div>
+            <div class="schema-field"><span class="f-name">label</span><span class="f-type">ENUM</span><span
+                class="f-desc">'normal' | 'breaking' | 'exclusive' | 'opinion' | 'analysis'</span></div>
+            <div class="schema-field"><span class="f-name">is_featured</span><span class="f-type">BOOLEAN</span><span
+                class="f-desc">Tampil di hero/highlight</span></div>
+            <div class="schema-field"><span class="f-name">view_count</span><span class="f-type">BIGINT</span><span
+                class="f-desc">Total pageview</span></div>
+            <div class="schema-field"><span class="f-name">read_time</span><span class="f-type">SMALLINT</span><span
+                class="f-desc">Estimasi menit baca</span></div>
+            <div class="schema-field"><span class="f-name">meta_title</span><span class="f-type">VARCHAR(60)</span><span
+                class="f-desc">SEO meta title</span></div>
+            <div class="schema-field"><span class="f-name">meta_description</span><span
+                class="f-type">VARCHAR(160)</span><span class="f-desc">SEO meta description</span></div>
+            <div class="schema-field"><span class="f-name">og_image_url</span><span class="f-type">TEXT</span><span
+                class="f-desc">Open Graph image URL</span></div>
+            <div class="schema-field"><span class="f-name">canonical_url</span><span class="f-type">TEXT</span><span
+                class="f-desc">URL kanonik jika berbeda</span></div>
+            <div class="schema-field"><span class="f-name">published_at</span><span class="f-type">TIMESTAMP</span><span
+                class="f-desc">Waktu publish atau jadwal publish</span></div>
+            <div class="schema-field"><span class="f-name">created_at</span><span class="f-type">TIMESTAMP</span><span
+                class="f-desc">Waktu artikel dibuat</span></div>
+            <div class="schema-field"><span class="f-name">updated_at</span><span class="f-type">TIMESTAMP</span><span
+                class="f-desc">Waktu update terakhir</span></div>
+          </div>
+        </div>
+
+        <!-- Categories, Tags, Comments, Media -->
+        <div class="card-grid">
+          <div class="schema-block" style="margin:0;">
+            <div class="schema-header">📁 TABLE: <span>categories</span></div>
+            <div class="schema-fields">
+              <div class="schema-field"><span class="f-name">id <span class="pk">PK</span></span><span
+                  class="f-type">UUID</span><span class="f-desc"></span></div>
+              <div class="schema-field"><span class="f-name">parent_id <span class="fk">FK</span></span><span
+                  class="f-type">UUID</span><span class="f-desc">Self-ref untuk sub-kategori</span></div>
+              <div class="schema-field"><span class="f-name">name</span><span class="f-type">VARCHAR(100)</span><span
+                  class="f-desc">Nama kategori</span></div>
+              <div class="schema-field"><span class="f-name">slug</span><span class="f-type">VARCHAR(100)</span><span
+                  class="f-desc">URL-friendly</span></div>
+              <div class="schema-field"><span class="f-name">description</span><span class="f-type">TEXT</span><span
+                  class="f-desc">Deskripsi kategori</span></div>
+              <div class="schema-field"><span class="f-name">color</span><span class="f-type">VARCHAR(7)</span><span
+                  class="f-desc">Hex color untuk badge</span></div>
+              <div class="schema-field"><span class="f-name">meta_title</span><span
+                  class="f-type">VARCHAR(60)</span><span class="f-desc">SEO per kategori</span></div>
+              <div class="schema-field"><span class="f-name">sort_order</span><span class="f-type">SMALLINT</span><span
+                  class="f-desc">Urutan tampil di nav</span></div>
+              <div class="schema-field"><span class="f-name">is_active</span><span class="f-type">BOOLEAN</span><span
+                  class="f-desc">Aktif/tidak</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;" class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tabel</th>
+                <th>Kolom Penting</th>
+                <th>Fungsi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>tags</td>
+                <td>id, name, slug, usage_count</td>
+                <td>Label topik artikel</td>
+              </tr>
+              <tr>
+                <td>article_tags</td>
+                <td>article_id (FK), tag_id (FK)</td>
+                <td>Many-to-many artikel &amp; tag</td>
+              </tr>
+              <tr>
+                <td>comments</td>
+                <td>id, article_id, user_id, parent_id, content, status, likes_count</td>
+                <td>Komentar bersarang</td>
+              </tr>
+              <tr>
+                <td>media</td>
+                <td>id, uploader_id, filename, url, cdn_url, file_type, size, alt_text, width, height</td>
+                <td>Manajemen file media</td>
+              </tr>
+              <tr>
+                <td>bookmarks</td>
+                <td>id, user_id, article_id, created_at</td>
+                <td>Artikel tersimpan</td>
+              </tr>
+              <tr>
+                <td>newsletter_subscribers</td>
+                <td>id, email, categories[], status, subscribed_at</td>
+                <td>Subscriber newsletter</td>
+              </tr>
+              <tr>
+                <td>article_revisions</td>
+                <td>id, article_id, editor_id, content_snapshot, revision_note, created_at</td>
+                <td>Riwayat revisi artikel</td>
+              </tr>
+              <tr>
+                <td>activity_logs</td>
+                <td>id, user_id, action, entity_type, entity_id, metadata, ip_address, created_at</td>
+                <td>Audit trail sistem</td>
+              </tr>
+              <tr>
+                <td>site_settings</td>
+                <td>key, value, description, updated_by, updated_at</td>
+                <td>Konfigurasi global portal</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         10 — UI/UX GUIDELINES
+    ═════════════════════════════════════════════════════ -->
+      <section id="uiux" class="section">
+        <div class="section-header">
+          <div class="section-number">10</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🎨</span>
+            <h2>UI/UX Guidelines</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Konsep Desain</h3>
+          <p>NusaPost mengadopsi pendekatan desain <strong>"Editorial Modern"</strong> — bersih, terpercaya, dan
+            profesional seperti surat kabar digital kelas dunia. Prioritas utama adalah <em>konten di atas
+              segalanya</em>, dengan elemen UI yang tidak bersaing dengan tulisan.</p>
+          <div class="callout gold">
+            <span class="callout-icon">🎨</span>
+            <div class="callout-body">
+              <div class="callout-title">Design Philosophy</div>
+              <p class="callout-text">"Jadilah transparan seperti kaca — desain yang baik adalah yang tidak terasa,
+                sehingga pembaca hanya fokus pada konten, bukan pada interface."</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Warna & Typography</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Token</th>
+                  <th>Nilai</th>
+                  <th>Penggunaan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Primary Red</td>
+                  <td>#C0392B</td>
+                  <td>Breaking news, tombol utama, aksen heading</td>
+                </tr>
+                <tr>
+                  <td>Dark Ink</td>
+                  <td>#0D0D0D</td>
+                  <td>Teks utama, background navbar</td>
+                </tr>
+                <tr>
+                  <td>Medium Gray</td>
+                  <td>#5A5A5A</td>
+                  <td>Teks sekunder, meta informasi</td>
+                </tr>
+                <tr>
+                  <td>Light Paper</td>
+                  <td>#FAF9F7</td>
+                  <td>Background halaman utama</td>
+                </tr>
+                <tr>
+                  <td>Warm White</td>
+                  <td>#FFFFFF</td>
+                  <td>Background card, CMS panel</td>
+                </tr>
+                <tr>
+                  <td>Border Subtle</td>
+                  <td>#D8D4CC</td>
+                  <td>Divider, border card</td>
+                </tr>
+                <tr>
+                  <td>Headline Font</td>
+                  <td>Playfair Display / Merriweather</td>
+                  <td>Judul artikel, hero heading</td>
+                </tr>
+                <tr>
+                  <td>Body Font</td>
+                  <td>Source Serif Pro / DM Serif</td>
+                  <td>Konten artikel (readability)</td>
+                </tr>
+                <tr>
+                  <td>UI Font</td>
+                  <td>Inter / DM Sans</td>
+                  <td>Navigasi, label, tombol, CMS</td>
+                </tr>
+                <tr>
+                  <td>Mono Font</td>
+                  <td>JetBrains Mono</td>
+                  <td>Kode, timestamp, metadata teknis</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Mobile Responsiveness</h3>
+          <ul>
+            <li><strong>Breakpoints:</strong> Mobile (&lt;768px), Tablet (768–1024px), Desktop (1024–1440px), Wide
+              (1440px+)</li>
+            <li><strong>Mobile-First CSS:</strong> Semua komponen dikembangkan dari mobile naik ke desktop.</li>
+            <li><strong>Navigation Mobile:</strong> Hamburger menu dengan side drawer, search bar full-width.</li>
+            <li><strong>Card Layout:</strong> Single column di mobile, 2 kolom di tablet, 3–4 kolom di desktop.</li>
+            <li><strong>Image Optimization:</strong> Responsive images dengan atribut <code
+                style="font-family:var(--font-mono);font-size:12px;background:var(--paper-warm);padding:1px 5px;border-radius:3px;">srcset</code>
+              dan <code
+                style="font-family:var(--font-mono);font-size:12px;background:var(--paper-warm);padding:1px 5px;border-radius:3px;">sizes</code>.
+            </li>
+            <li><strong>Touch Targets:</strong> Semua tombol dan link minimal 44×44px sesuai WCAG 2.1.</li>
+            <li><strong>Swipe Gesture:</strong> Swipe untuk navigasi antar artikel (mobile).</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Accessibility (WCAG 2.1 Level AA)</h3>
+          <ul>
+            <li><strong>Color Contrast:</strong> Rasio kontras minimal 4.5:1 untuk teks normal, 3:1 untuk teks besar.
+            </li>
+            <li><strong>Keyboard Navigation:</strong> Seluruh halaman dapat dinavigasi menggunakan keyboard.</li>
+            <li><strong>Screen Reader:</strong> Semua elemen interaktif memiliki label ARIA yang sesuai.</li>
+            <li><strong>Skip Navigation:</strong> Link "Skip to main content" untuk pengguna keyboard.</li>
+            <li><strong>Alt Text:</strong> Semua gambar wajib memiliki alt text deskriptif.</li>
+            <li><strong>Focus Indicator:</strong> Outline fokus yang terlihat jelas saat navigasi keyboard.</li>
+            <li><strong>Reduced Motion:</strong> Menghormati preferensi <code
+                style="font-family:var(--font-mono);font-size:12px;">prefers-reduced-motion</code> media query.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         11 — SEO & PERFORMANCE
+    ═════════════════════════════════════════════════════ -->
+      <section id="seo" class="section">
+        <div class="section-header">
+          <div class="section-number">11</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🔍</span>
+            <h2>SEO & Performance</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Struktur URL SEO-Friendly</h3>
+          <div class="code-block">
+            <span class="code-label">URL Patterns</span>
+            <span class="cm"># Homepage</span>
+            <span class="str">https://nusapost.id/</span>
+
+            <span class="cm"># Kategori Utama</span>
+            <span class="str">https://nusapost.id/politik/</span>
+            <span class="str">https://nusapost.id/ekonomi/</span>
+
+            <span class="cm"># Sub-Kategori</span>
+            <span class="str">https://nusapost.id/politik/nasional/</span>
+
+            <span class="cm"># Artikel (dengan tanggal dan slug)</span>
+            <span class="str">https://nusapost.id/politik/nasional/2026/04/judul-artikel-seo-friendly/</span>
+
+            <span class="cm"># Profil Penulis</span>
+            <span class="str">https://nusapost.id/penulis/sari-dewi/</span>
+
+            <span class="cm"># Tag</span>
+            <span class="str">https://nusapost.id/tag/pemilu-2024/</span>
+
+            <span class="cm"># Search</span>
+            <span class="str">https://nusapost.id/search?q=ekonomi+digital&cat=teknologi</span>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Schema Markup (JSON-LD)</h3>
+          <ul>
+            <li><strong>NewsArticle:</strong> Untuk setiap halaman artikel. Mencakup headline, author, datePublished,
+              image, publisher.</li>
+            <li><strong>BreadcrumbList:</strong> Navigasi roti remah untuk semua halaman.</li>
+            <li><strong>Organization:</strong> Data portal berita di homepage.</li>
+            <li><strong>Person:</strong> Untuk halaman profil penulis.</li>
+            <li><strong>WebSite:</strong> Sitelinks searchbox di halaman utama.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Core Web Vitals Targets</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Metrik</th>
+                  <th>Target</th>
+                  <th>Strategi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>LCP (Largest Contentful Paint)</td>
+                  <td>&lt;2.5 detik</td>
+                  <td>SSR, CDN, hero image preload, WebP</td>
+                </tr>
+                <tr>
+                  <td>FID (First Input Delay)</td>
+                  <td>&lt;100ms</td>
+                  <td>Code splitting, defer non-critical JS</td>
+                </tr>
+                <tr>
+                  <td>CLS (Cumulative Layout Shift)</td>
+                  <td>&lt;0.1</td>
+                  <td>Dimensi gambar eksplisit, font-display swap</td>
+                </tr>
+                <tr>
+                  <td>TTFB (Time to First Byte)</td>
+                  <td>&lt;200ms</td>
+                  <td>Redis cache, CDN, server-side caching</td>
+                </tr>
+                <tr>
+                  <td>FCP (First Contentful Paint)</td>
+                  <td>&lt;1.5 detik</td>
+                  <td>Critical CSS inline, resource hints</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Strategi Caching & CDN</h3>
+          <ul>
+            <li><strong>Static Assets:</strong> JS, CSS, gambar — cache 1 tahun dengan content hash.</li>
+            <li><strong>Halaman Artikel:</strong> ISR (Incremental Static Regeneration) — revalidate setiap 60 detik.
+            </li>
+            <li><strong>Homepage & Kategori:</strong> ISR revalidate setiap 30 detik untuk berita terbaru.</li>
+            <li><strong>API Response:</strong> Redis cache untuk endpoint populer (trending, top articles) dengan TTL 5
+              menit.</li>
+            <li><strong>CDN:</strong> Cloudflare di depan semua aset dan halaman. Edge caching di 200+ lokasi global.
+            </li>
+            <li><strong>Lazy Loading:</strong> Semua gambar dan video menggunakan native lazy loading (<code
+                style="font-family:var(--font-mono);font-size:12px;">loading="lazy"</code>).</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         12 — SECURITY
+    ═════════════════════════════════════════════════════ -->
+      <section id="security" class="section">
+        <div class="section-header">
+          <div class="section-number">12</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🔒</span>
+            <h2>Security</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Authentication & Authorization</h3>
+          <ul>
+            <li><strong>JWT Access Token:</strong> Masa berlaku 15 menit. Disimpan di memory (bukan localStorage).</li>
+            <li><strong>Refresh Token:</strong> Masa berlaku 30 hari. Disimpan di HttpOnly Cookie.</li>
+            <li><strong>OAuth 2.0:</strong> Login via Google dan Facebook sebagai opsi tambahan.</li>
+            <li><strong>Multi-Factor Authentication (MFA):</strong> Wajib untuk Admin dan Editor (TOTP via Google
+              Authenticator).</li>
+            <li><strong>Session Management:</strong> Invalidate semua sesi saat ganti password atau logout dari semua
+              perangkat.</li>
+            <li><strong>Password Policy:</strong> Minimal 8 karakter, kombinasi huruf besar/kecil, angka, dan simbol.
+            </li>
+            <li><strong>Brute Force Protection:</strong> Rate limiting pada endpoint login — blokir setelah 5 kali
+              gagal.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Proteksi Serangan</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ancaman</th>
+                  <th>Proteksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>SQL Injection</td>
+                  <td>Parameterized queries / ORM. Tidak pernah string concatenation di SQL.</td>
+                </tr>
+                <tr>
+                  <td>XSS (Cross-Site Scripting)</td>
+                  <td>Sanitasi semua input pengguna. Content Security Policy (CSP) header ketat.</td>
+                </tr>
+                <tr>
+                  <td>CSRF</td>
+                  <td>CSRF token pada semua form. SameSite cookie attribute.</td>
+                </tr>
+                <tr>
+                  <td>IDOR</td>
+                  <td>Validasi kepemilikan resource di setiap request. Jangan expose ID sequential.</td>
+                </tr>
+                <tr>
+                  <td>DDoS</td>
+                  <td>Cloudflare DDoS protection. Rate limiting di API Gateway.</td>
+                </tr>
+                <tr>
+                  <td>File Upload Exploit</td>
+                  <td>Validasi MIME type, bukan ekstensi. Scan malware sebelum simpan. Simpan di S3 terpisah.</td>
+                </tr>
+                <tr>
+                  <td>Sensitive Data Exposure</td>
+                  <td>Enkripsi data sensitif di database. Tidak pernah log password atau token.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>HTTPS & Header Security</h3>
+          <ul>
+            <li><strong>HTTPS:</strong> Wajib di semua lingkungan. HSTS (HTTP Strict Transport Security) dengan preload.
+            </li>
+            <li><strong>Security Headers:</strong> X-Content-Type-Options, X-Frame-Options (SAMEORIGIN),
+              Referrer-Policy.</li>
+            <li><strong>Content Security Policy:</strong> Whitelist domain yang boleh load script, style, dan gambar.
+            </li>
+            <li><strong>SSL Certificate:</strong> Let's Encrypt dengan auto-renewal, atau AWS Certificate Manager.</li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Backup & Recovery</h3>
+          <ul>
+            <li><strong>Database Backup:</strong> Otomatis setiap 6 jam. Retensi 30 hari. Enkripsi backup dengan
+              AES-256.</li>
+            <li><strong>Point-in-Time Recovery:</strong> Kemampuan restore database ke titik waktu tertentu dalam 30
+              hari terakhir.</li>
+            <li><strong>Media Backup:</strong> AWS S3 Cross-Region Replication untuk file media.</li>
+            <li><strong>Disaster Recovery:</strong> RTO (Recovery Time Objective) &lt;4 jam, RPO (Recovery Point
+              Objective) &lt;1 jam.</li>
+            <li><strong>Backup Testing:</strong> Restore drill bulanan untuk verifikasi integritas backup.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         13 — ANALYTICS
+    ═════════════════════════════════════════════════════ -->
+      <section id="analytics" class="section">
+        <div class="section-header">
+          <div class="section-number">13</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">📊</span>
+            <h2>Analytics & Tracking</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Integrasi Tools</h3>
+          <div class="card-grid">
+            <div class="card accent-red">
+              <span class="card-icon">📈</span>
+              <h4>Google Analytics 4 (GA4)</h4>
+              <p>Tracking pageview, session, bounce rate, konversi, dan demografi pengguna. Custom event untuk interaksi
+                spesifik (share, bookmark, scroll depth).</p>
+            </div>
+            <div class="card accent-blue">
+              <span class="card-icon">🔎</span>
+              <h4>Google Search Console</h4>
+              <p>Monitor performa keyword organik, coverage index, Core Web Vitals, dan structured data errors.</p>
+            </div>
+            <div class="card accent-gold">
+              <span class="card-icon">🔥</span>
+              <h4>Hotjar (Opsional)</h4>
+              <p>Heatmap klik dan scroll, session recording, dan funnel analisis untuk optimasi UX lebih dalam.</p>
+            </div>
+            <div class="card accent-green">
+              <span class="card-icon">📊</span>
+              <h4>Internal Analytics</h4>
+              <p>Dashboard custom di CMS dengan metrik per artikel dan per penulis. Data disimpan di database sendiri
+                untuk privasi penuh.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Custom Event Tracking (GA4)</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event Name</th>
+                  <th>Trigger</th>
+                  <th>Parameter</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>article_read</td>
+                  <td>Scroll 80% halaman artikel</td>
+                  <td>article_id, category, author</td>
+                </tr>
+                <tr>
+                  <td>article_share</td>
+                  <td>Klik tombol share</td>
+                  <td>article_id, platform (wa/fb/tw)</td>
+                </tr>
+                <tr>
+                  <td>article_bookmark</td>
+                  <td>Klik tombol bookmark</td>
+                  <td>article_id</td>
+                </tr>
+                <tr>
+                  <td>comment_submit</td>
+                  <td>Submit komentar berhasil</td>
+                  <td>article_id</td>
+                </tr>
+                <tr>
+                  <td>newsletter_subscribe</td>
+                  <td>Submit form newsletter</td>
+                  <td>source_page, category[]</td>
+                </tr>
+                <tr>
+                  <td>search_perform</td>
+                  <td>Submit pencarian</td>
+                  <td>query, result_count</td>
+                </tr>
+                <tr>
+                  <td>video_play</td>
+                  <td>Play video artikel</td>
+                  <td>article_id, video_provider</td>
+                </tr>
+                <tr>
+                  <td>login_success</td>
+                  <td>Login berhasil</td>
+                  <td>method (email/google/fb)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         14 — DEVOPS
+    ═════════════════════════════════════════════════════ -->
+      <section id="devops" class="section">
+        <div class="section-header">
+          <div class="section-number">14</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🚀</span>
+            <h2>Deployment & DevOps</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Environment Setup</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Environment</th>
+                  <th>Tujuan</th>
+                  <th>Update Trigger</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="badge green">Development</span></td>
+                  <td>Pengembangan fitur baru oleh developer</td>
+                  <td>Push ke branch feature/*</td>
+                  <td>Dummy/seed data</td>
+                </tr>
+                <tr>
+                  <td><span class="badge gold">Staging</span></td>
+                  <td>QA testing dan preview klien sebelum release</td>
+                  <td>Merge ke branch develop</td>
+                  <td>Anonymized production data</td>
+                </tr>
+                <tr>
+                  <td><span class="badge red">Production</span></td>
+                  <td>Server live yang diakses publik</td>
+                  <td>Merge ke branch main (setelah approval)</td>
+                  <td>Data produksi sesungguhnya</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>CI/CD Pipeline</h3>
+          <ul>
+            <li><strong>Platform:</strong> GitHub Actions (atau GitLab CI)</li>
+            <li><strong>Pull Request Check:</strong> Auto-run lint, unit test, dan build check setiap PR.</li>
+            <li><strong>Staging Deploy:</strong> Otomatis deploy ke staging setelah merge ke branch <code
+                style="font-family:var(--font-mono);font-size:12px;">develop</code>.</li>
+            <li><strong>Production Deploy:</strong> Manual approval diperlukan sebelum deploy ke production dari branch
+              <code style="font-family:var(--font-mono);font-size:12px;">main</code>.</li>
+            <li><strong>Zero Downtime Deploy:</strong> Blue-green deployment atau rolling update menggunakan
+              Kubernetes/ECS.</li>
+            <li><strong>Rollback:</strong> Satu perintah untuk rollback ke versi sebelumnya jika ditemukan bug kritis.
+            </li>
+            <li><strong>Containerization:</strong> Docker untuk semua service. Docker Compose untuk development lokal.
+            </li>
+          </ul>
+        </div>
+
+        <div class="subsection">
+          <h3>Monitoring & Alerting</h3>
+          <ul>
+            <li><strong>Application Monitoring:</strong> Sentry untuk error tracking dan performance monitoring.</li>
+            <li><strong>Infrastructure Monitoring:</strong> AWS CloudWatch atau Grafana + Prometheus untuk CPU, memory,
+              dan network metrics.</li>
+            <li><strong>Uptime Monitoring:</strong> UptimeRobot atau Pingdom — check setiap 1 menit dari multiple
+              lokasi.</li>
+            <li><strong>Log Aggregation:</strong> ELK Stack (Elasticsearch, Logstash, Kibana) atau AWS CloudWatch Logs.
+            </li>
+            <li><strong>Alerting:</strong> Notifikasi via Slack dan email untuk error rate &gt;1%, response time &gt;2s,
+              atau uptime &lt;99%.</li>
+            <li><strong>Database Monitoring:</strong> Slow query log, connection pool usage, dan storage usage alerts.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         15 — TIMELINE
+    ═════════════════════════════════════════════════════ -->
+      <section id="timeline" class="section">
+        <div class="section-header">
+          <div class="section-number">15</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">📅</span>
+            <h2>Timeline Pengembangan</h2>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">ℹ️</span>
+          <div class="callout-body">
+            <div class="callout-title">Asumsi Tim</div>
+            <p class="callout-text">Timeline ini mengasumsikan tim terdiri dari: 2 Frontend Dev, 2 Backend Dev, 1 UI/UX
+              Designer, 1 QA Engineer, dan 1 DevOps Engineer. Total durasi MVP: <strong>~5 bulan</strong>.</p>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-phase">Fase 1</div>
+            <div class="timeline-title">Discovery & Planning</div>
+            <div class="timeline-duration">⏱ 2 Minggu</div>
+            <ul>
+              <li>Finalisasi PRD dan scope MVP</li>
+              <li>Kickoff meeting dan pembagian tugas tim</li>
+              <li>Setup repository, branching strategy, dan project management (Jira/Linear)</li>
+              <li>Riset kompetitor dan benchmarking teknis</li>
+              <li>Definisi API contract antara frontend dan backend</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-phase">Fase 2</div>
+            <div class="timeline-title">UI/UX Design</div>
+            <div class="timeline-duration">⏱ 3 Minggu</div>
+            <ul>
+              <li>Wireframe low-fidelity seluruh halaman (homepage, artikel, kategori, CMS)</li>
+              <li>Design system: color tokens, typography, komponen dasar</li>
+              <li>Prototype high-fidelity di Figma</li>
+              <li>User testing prototype dengan 5–8 responden target</li>
+              <li>Iterasi desain berdasarkan feedback</li>
+              <li>Handoff design ke developer</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-phase">Fase 3</div>
+            <div class="timeline-title">Development Sprint 1 — Foundation</div>
+            <div class="timeline-duration">⏱ 4 Minggu</div>
+            <ul>
+              <li>Setup infrastruktur cloud (AWS/GCP), database, dan CDN</li>
+              <li>Inisialisasi Next.js project dan backend API</li>
+              <li>Sistem autentikasi (register, login, JWT, OAuth)</li>
+              <li>Model database dan migrasi</li>
+              <li>CMS: CRUD artikel dasar dan manajemen media</li>
+              <li>Frontend: Layout dasar, navigasi, dan halaman artikel statis</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-phase">Fase 4</div>
+            <div class="timeline-title">Development Sprint 2 — Core Features</div>
+            <div class="timeline-duration">⏱ 4 Minggu</div>
+            <ul>
+              <li>Frontend: Homepage lengkap, halaman kategori, search</li>
+              <li>CMS: Workflow editorial (draft→review→publish), rich text editor</li>
+              <li>Sistem komentar dan moderasi</li>
+              <li>Fitur bookmark dan newsletter subscription</li>
+              <li>SEO tools di CMS (meta, slug, OG tags)</li>
+              <li>Role & permission system</li>
+              <li>Admin dashboard analytics dasar</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-phase">Fase 5</div>
+            <div class="timeline-title">Development Sprint 3 — Polish & Optimization</div>
+            <div class="timeline-duration">⏱ 3 Minggu</div>
+            <ul>
+              <li>Performance optimization: caching, lazy loading, image optimization</li>
+              <li>SEO: schema markup, sitemap, meta tags otomatis</li>
+              <li>PWA: service worker, offline support, web push notification</li>
+              <li>Responsiveness dan aksesibilitas (WCAG 2.1)</li>
+              <li>Integrasi Google Analytics 4 dan custom events</li>
+              <li>Security audit awal dan penetration testing</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-phase">Fase 6</div>
+            <div class="timeline-title">Quality Assurance & Testing</div>
+            <div class="timeline-duration">⏱ 2 Minggu</div>
+            <ul>
+              <li>Functional testing semua user flow dan fitur</li>
+              <li>Cross-browser testing (Chrome, Firefox, Safari, Edge)</li>
+              <li>Cross-device testing (iOS, Android, tablet, desktop)</li>
+              <li>Load testing — simulasi 10.000 concurrent users</li>
+              <li>Security penetration testing</li>
+              <li>Lighthouse audit dan optimasi nilai skor</li>
+              <li>UAT (User Acceptance Testing) dengan stakeholder</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-phase">Fase 7</div>
+            <div class="timeline-title">Soft Launch & Monitoring</div>
+            <div class="timeline-duration">⏱ 1 Minggu</div>
+            <ul>
+              <li>Deploy ke production environment</li>
+              <li>Soft launch terbatas (whitelist pengguna beta)</li>
+              <li>Monitor error, performa, dan log secara intensif</li>
+              <li>Perbaikan bug kritikal yang ditemukan post-launch</li>
+              <li>Training tim editorial dalam menggunakan CMS</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-phase">Fase 8</div>
+            <div class="timeline-title">Public Launch & Iterasi</div>
+            <div class="timeline-duration">⏱ Ongoing</div>
+            <ul>
+              <li>Grand launch resmi ke publik</li>
+              <li>Kampanye marketing awal</li>
+              <li>Pengumpulan feedback pengguna aktif</li>
+              <li>Sprint iterasi 2 mingguan berdasarkan data dan feedback</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fase</th>
+                <th>Nama</th>
+                <th>Durasi</th>
+                <th>Deliverable Utama</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Discovery</td>
+                <td>2 Minggu</td>
+                <td>PRD final, tech stack decision, project setup</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Design</td>
+                <td>3 Minggu</td>
+                <td>Figma prototype lengkap, design system</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Dev Sprint 1</td>
+                <td>4 Minggu</td>
+                <td>Auth, DB schema, basic CMS, infra setup</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Dev Sprint 2</td>
+                <td>4 Minggu</td>
+                <td>Semua fitur utama frontend & CMS</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>Dev Sprint 3</td>
+                <td>3 Minggu</td>
+                <td>Optimasi, SEO, PWA, security</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>QA & Testing</td>
+                <td>2 Minggu</td>
+                <td>Laporan testing, bug fixes</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>Soft Launch</td>
+                <td>1 Minggu</td>
+                <td>Produksi live (beta)</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>Public Launch</td>
+                <td>Ongoing</td>
+                <td>Grand launch + iterasi</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         16 — RISIKO
+    ═════════════════════════════════════════════════════ -->
+      <section id="risks" class="section">
+        <div class="section-header">
+          <div class="section-number">16</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">⚠️</span>
+            <h2>Risiko & Mitigasi</h2>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3>Risiko Teknis</h3>
+
+          <div class="risk-item">
+            <div class="risk-desc">Performa Lambat saat Breaking News <small>Lonjakan traffic 10–50x dalam waktu singkat
+                dapat menyebabkan downtime</small></div>
+            <div><span class="badge gold">Sedang</span></div>
+            <div><span class="badge blue">Mitigasi</span></div>
+          </div>
+          <p style="margin-left:12px;font-size:13px;color:var(--ink-muted);margin-bottom:16px;">→ Auto-scaling
+            infrastructure, Redis caching agresif, CDN edge caching, dan load testing berkala. Buat runbook untuk
+            skenario high-traffic.</p>
+
+          <div class="risk-item">
+            <div class="risk-desc">Kerentanan Keamanan <small>Potensi data breach dari injection attack, atau
+                eksploitasi upload media</small></div>
+            <div><span class="badge red">Tinggi</span></div>
+            <div><span class="badge blue">Mitigasi</span></div>
+          </div>
+          <p style="margin-left:12px;font-size:13px;color:var(--ink-muted);margin-bottom:16px;">→ Security audit oleh
+            pihak ketiga sebelum launch. Penetration testing rutin. SAST/DAST tools di CI/CD pipeline. Bug bounty
+            program pasca-launch.</p>
+
+          <div class="risk-item">
+            <div class="risk-desc">Keterlambatan Pengembangan <small>Timeline meleset karena scope creep, bug yang
+                sulit, atau kurang tenaga SDM</small></div>
+            <div><span class="badge gold">Sedang</span></div>
+            <div><span class="badge blue">Mitigasi</span></div>
+          </div>
+          <p style="margin-left:12px;font-size:13px;color:var(--ink-muted);margin-bottom:16px;">→ Definisi jelas MVP vs
+            nice-to-have. Sprint planning ketat dengan velocity tracking. Buffer waktu 20% di setiap sprint. Scope
+            freeze 2 minggu sebelum launch.</p>
+
+          <div class="risk-item">
+            <div class="risk-desc">Kehilangan Data <small>Database corrupt atau human error yang menyebabkan kehilangan
+                konten editorial</small></div>
+            <div><span class="badge red">Tinggi</span></div>
+            <div><span class="badge blue">Mitigasi</span></div>
+          </div>
+          <p style="margin-left:12px;font-size:13px;color:var(--ink-muted);margin-bottom:16px;">→ Backup otomatis setiap
+            6 jam, point-in-time recovery, dan soft-delete (tidak langsung hapus permanen). Drill restore backup setiap
+            bulan.</p>
+        </div>
+
+        <div class="subsection">
+          <h3>Risiko Bisnis</h3>
+
+          <div class="risk-item">
+            <div class="risk-desc">Traffic Organik Rendah <small>Gagal mendapat peringkat di Google Search, sehingga
+                traffic organik tidak tumbuh</small></div>
+            <div><span class="badge gold">Sedang</span></div>
+            <div><span class="badge blue">Mitigasi</span></div>
+          </div>
+          <p style="margin-left:12px;font-size:13px;color:var(--ink-muted);margin-bottom:16px;">→ SEO-first development
+            dari awal. Konten berkualitas tinggi sesuai E-E-A-T Google. Inbound link building aktif. Monitor GSC
+            mingguan dan iterasi cepat.</p>
+
+          <div class="risk-item">
+            <div class="risk-desc">Konten Misinformasi <small>Artikel tidak akurat atau hoaks yang dipublish karena
+                lemahnya editorial process</small></div>
+            <div><span class="badge red">Tinggi</span></div>
+            <div><span class="badge blue">Mitigasi</span></div>
+          </div>
+          <p style="margin-left:12px;font-size:13px;color:var(--ink-muted);margin-bottom:16px;">→ Workflow editorial
+            ketat (writer → editor → publish). Panduan jurnalisme yang jelas. Mekanisme koreksi artikel yang transparan.
+            Training tim redaksi.</p>
+
+          <div class="risk-item">
+            <div class="risk-desc">Adopsi CMS Rendah oleh Tim Editorial <small>Jurnalis dan editor enggan menggunakan
+                CMS baru karena kompleksitas atau bug</small></div>
+            <div><span class="badge orange">Rendah</span></div>
+            <div><span class="badge blue">Mitigasi</span></div>
+          </div>
+          <p style="margin-left:12px;font-size:13px;color:var(--ink-muted);margin-bottom:16px;">→ UX-focused CMS design.
+            Training session sebelum launch. Dokumentasi dan video tutorial. Feedback loop aktif dari redaksi selama
+            development.</p>
+
+          <div class="risk-item">
+            <div class="risk-desc">Regulasi & Hukum <small>Perubahan regulasi media digital Indonesia yang mempengaruhi
+                operasi platform</small></div>
+            <div><span class="badge gold">Sedang</span></div>
+            <div><span class="badge blue">Mitigasi</span></div>
+          </div>
+          <p style="margin-left:12px;font-size:13px;color:var(--ink-muted);margin-bottom:16px;">→ Konsultasi dengan
+            konsultan hukum media sebelum launch. Pendaftaran ke Dewan Pers dan Kominfo. Monitor perubahan regulasi
+            secara berkala.</p>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════
+         17 — FUTURE ENHANCEMENT
+    ═════════════════════════════════════════════════════ -->
+      <section id="future" class="section">
+        <div class="section-header">
+          <div class="section-number">17</div>
+          <div class="section-title-wrap">
+            <span class="section-emoji">🔮</span>
+            <h2>Future Enhancement</h2>
+          </div>
+        </div>
+
+        <div class="callout purple">
+          <span class="callout-icon">🚀</span>
+          <div class="callout-body">
+            <div class="callout-title">Roadmap Pasca-MVP</div>
+            <p class="callout-text">Fitur-fitur berikut direncanakan untuk dikembangkan setelah platform berhasil
+              meluncur dan mencapai target traffic awal. Prioritas akan ditentukan berdasarkan data pengguna dan
+              kebutuhan bisnis.</p>
+          </div>
+        </div>
+
+        <div class="future-grid">
+          <div class="future-item">
+            <div class="future-phase">Q3 2026 — Fase 2</div>
+            <div class="future-title">📱 Mobile App Native</div>
+            <p class="future-desc">Aplikasi iOS dan Android menggunakan React Native. Push notification native, offline
+              reading, dan widget berita di home screen.</p>
+          </div>
+          <div class="future-item">
+            <div class="future-phase">Q3 2026 — Fase 2</div>
+            <div class="future-title">🤖 AI Writing Assistant</div>
+            <p class="future-desc">Integrasi AI (GPT/Claude API) di CMS untuk saran judul, auto-summary, deteksi
+              grammatical error, dan saran kata kunci SEO.</p>
+          </div>
+          <div class="future-item">
+            <div class="future-phase">Q4 2026 — Fase 3</div>
+            <div class="future-title">🎯 Personalisasi Konten</div>
+            <p class="future-desc">Rekomendasi artikel yang dipersonalisasi berdasarkan riwayat baca, preferensi topik,
+              dan perilaku pengguna menggunakan collaborative filtering.</p>
+          </div>
+          <div class="future-item">
+            <div class="future-phase">Q4 2026 — Fase 3</div>
+            <div class="future-title">🎙️ Text-to-Speech</div>
+            <p class="future-desc">Konversi artikel ke audio otomatis. Pengguna bisa mendengar berita sambil
+              beraktivitas. Cocok untuk penyandang tunanetra.</p>
+          </div>
+          <div class="future-item">
+            <div class="future-phase">Q1 2027 — Fase 4</div>
+            <div class="future-title">💎 Subscripsi Premium</div>
+            <p class="future-desc">Paywall untuk konten eksklusif. Integrasi payment gateway (Midtrans/Xendit). Model
+              freemium dengan fitur premium terbatas.</p>
+          </div>
+          <div class="future-item">
+            <div class="future-phase">Q1 2027 — Fase 4</div>
+            <div class="future-title">🗞️ Multi-Language</div>
+            <p class="future-desc">Dukungan Bahasa Inggris dan bahasa daerah pilihan. Auto-translate artikel menggunakan
+              DeepL/Google Translate API.</p>
+          </div>
+          <div class="future-item">
+            <div class="future-phase">Q2 2027 — Fase 5</div>
+            <div class="future-title">📺 Live Streaming</div>
+            <p class="future-desc">Streaming video langsung untuk liputan breaking news, siaran pers, dan konferensi
+              menggunakan WebRTC atau AWS IVS.</p>
+          </div>
+          <div class="future-item">
+            <div class="future-phase">Q2 2027 — Fase 5</div>
+            <div class="future-title">🤝 Partner API</div>
+            <p class="future-desc">API publik untuk sindikasi konten. Memungkinkan media partner embed berita NusaPost
+              di website mereka.</p>
+          </div>
+          <div class="future-item">
+            <div class="future-phase">Q3 2027 — Fase 6</div>
+            <div class="future-title">🧠 AI Fact-Checking</div>
+            <p class="future-desc">Sistem semi-otomatis pengecekan fakta berbasis AI yang membantu editor memverifikasi
+              klaim dalam artikel sebelum dipublish.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PENUTUP -->
+      <section class="section">
+        <div class="callout success">
+          <span class="callout-icon">✅</span>
+          <div class="callout-body">
+            <div class="callout-title">Dokumen Siap untuk Review</div>
+            <p class="callout-text">PRD ini telah mencakup semua aspek yang diperlukan untuk memulai pengembangan
+              NusaPost. Langkah selanjutnya: Review bersama stakeholder, finalisasi tech stack, dan kickoff meeting
+              dengan tim pengembang. Dokumen ini bersifat living document — akan diperbarui seiring perkembangan proyek.
+            </p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Dokumen Lanjutan yang Dibutuhkan</th>
+                <th>Penanggung Jawab</th>
+                <th>Deadline</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Technical Architecture Document (TAD)</td>
+                <td>Lead Backend Dev</td>
+                <td>Minggu 1</td>
+              </tr>
+              <tr>
+                <td>API Documentation (OpenAPI / Swagger)</td>
+                <td>Backend Team</td>
+                <td>Fase 3</td>
+              </tr>
+              <tr>
+                <td>Design System Documentation (Figma)</td>
+                <td>UI/UX Designer</td>
+                <td>Fase 2</td>
+              </tr>
+              <tr>
+                <td>QA Test Plan</td>
+                <td>QA Engineer</td>
+                <td>Fase 5</td>
+              </tr>
+              <tr>
+                <td>Editorial Guidelines</td>
+                <td>Pemimpin Redaksi</td>
+                <td>Sebelum Launch</td>
+              </tr>
+              <tr>
+                <td>Privacy Policy & Terms of Service</td>
+                <td>Legal Counsel</td>
+                <td>Sebelum Launch</td>
+              </tr>
+              <tr>
+                <td>Disaster Recovery Plan</td>
+                <td>DevOps Engineer</td>
+                <td>Fase 5</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div><!-- /.content -->
+
+    <!-- FOOTER -->
+    <footer class="doc-footer">
+      <div>
+        <strong>NusaPost — Portal Berita Digital</strong><br>
+        Product Requirements Document v1.0.0
+      </div>
+      <div style="text-align:center;">
+        Dokumen ini bersifat rahasia.<br>
+        Dilarang disebarkan tanpa izin tertulis.
+      </div>
+      <div style="text-align:right;">
+        Dibuat: April 2026<br>
+        Status: <strong style="color:#c9a84c;">Draft untuk Review</strong>
+      </div>
+    </footer>
+
+  </div><!-- /.main -->
+
+  <script>
+    // Highlight active nav item on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navItems.forEach(item => {
+            item.style.color = '';
+            item.style.borderLeftColor = '';
+            item.style.background = '';
+          });
+          const activeLink = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+          if (activeLink) {
+            activeLink.style.color = '#fff';
+            activeLink.style.borderLeftColor = '#c0392b';
+            activeLink.style.background = 'rgba(255,255,255,0.07)';
+          }
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+
+    // Smooth print function
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        window.print();
+      }
+    });
+  </script>
+
+</body>
+
+</html>
