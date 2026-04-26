@@ -1,5 +1,8 @@
+import { Suspense } from "react";
 import { prisma } from "@/lib/db";
 import Link from "next/link";
+import VideoSection from "@/components/VideoSection";
+import VideoSkeleton from "@/components/VideoSkeleton";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=1200&auto=format&fit=crop";
 
@@ -26,6 +29,7 @@ export default async function Home() {
   const articles = await prisma.article.findMany({
     where: {
       status: "PUBLISHED",
+      contentType: "ARTICLE",
     },
     orderBy: {
       publishedAt: "desc",
@@ -45,6 +49,7 @@ export default async function Home() {
   const popularArticles = await prisma.article.findMany({
     where: {
       status: "PUBLISHED",
+      contentType: "ARTICLE",
     },
     orderBy: {
       viewCount: "desc",
@@ -182,6 +187,11 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      {/* BERITA VIDEO (Custom Modular Section) */}
+      <Suspense fallback={<VideoSkeleton />}>
+        <VideoSection />
+      </Suspense>
     </div>
   );
 }

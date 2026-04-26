@@ -14,14 +14,16 @@ export interface ArticleFormData {
   featuredImageUrl: string;
   videoUrl: string;
   expiresAt: string;
+  contentType: "ARTICLE" | "VIDEO";
 }
 
 interface ArticleFormProps {
-  initialData?: ArticleFormData;
+  initialData?: Partial<ArticleFormData>;
   onSubmit: (data: ArticleFormData) => Promise<void>;
   isSubmitting: boolean;
   pageTitle: string;
   pageDescription: string;
+  contentType: "ARTICLE" | "VIDEO";
 }
 
 export default function ArticleForm({
@@ -29,7 +31,8 @@ export default function ArticleForm({
   onSubmit,
   isSubmitting,
   pageTitle,
-  pageDescription
+  pageDescription,
+  contentType
 }: ArticleFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState([]);
@@ -47,6 +50,7 @@ export default function ArticleForm({
     featuredImageUrl: "",
     videoUrl: "",
     expiresAt: "",
+    contentType: contentType,
   });
 
   useEffect(() => {
@@ -57,7 +61,10 @@ export default function ArticleForm({
       fetch("/api/v1/categories", { headers }).then((res) => res.json()),
       fetch("/api/v1/cms/users", { headers }).then((res) => res.json())
     ]).then(([cats, usrs]) => {
-      setCategories(cats.data || []);
+      const filteredCategories = (cats.data || []).filter(
+        (c: any) => c.name.toLowerCase() !== "foto" && c.name.toLowerCase() !== "cek fakta"
+      );
+      setCategories(filteredCategories);
       setUsers(usrs.data || []);
     });
   }, []);
@@ -205,16 +212,18 @@ export default function ArticleForm({
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-500 mb-2">Video URL (YouTube/Vimeo)</label>
-              <input
-                type="url"
-                value={formData.videoUrl}
-                onChange={(e) => setFormData({...formData, videoUrl: e.target.value})}
-                placeholder="https://youtube.com/watch?v=..."
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent outline-none text-sm"
-              />
-            </div>
+            {contentType === "VIDEO" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-500 mb-2">Video URL (YouTube/Vimeo)</label>
+                <input
+                  type="url"
+                  value={formData.videoUrl}
+                  onChange={(e) => setFormData({...formData, videoUrl: e.target.value})}
+                  placeholder="https://youtube.com/watch?v=..."
+                  className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent outline-none text-sm"
+                />
+              </div>
+            )}
           </div>
 
           {/* PUBLISHING SETTINGS */}

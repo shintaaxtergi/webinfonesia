@@ -3,52 +3,69 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { apiResponse, apiError, withAuth, slugify } from "@/lib/middleware";
 import { JwtPayload } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 // --- GET /api/v1/articles ---
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
+    const page  = Math.max(1, parseInt(searchParams.get("page")  || "1"));
     const limit = Math.min(50, Math.max(1, parseInt(searchParams.get("limit") || "12")));
-    const category = searchParams.get("category");
-    const featured = searchParams.get("featured");
+    const category    = searchParams.get("category");
+    const featured    = searchParams.get("featured");
+    const videoOnly   = searchParams.get("videoOnly");
+    const contentType = searchParams.get("contentType");  // "ARTICLE" | "VIDEO" | null
+    const status      = searchParams.get("status");
     const skip = (page - 1) * limit;
-    const status = searchParams.get("status");
 
     const where: Record<string, any> = {};
 
+    // Status filter — pass "ALL" to skip this filter
     if (status && status !== "ALL") {
       where.status = status;
     } else if (!status) {
       where.status = "PUBLISHED";
     }
 
-    if (category) where.category = { slug: category };
-    if (featured === "true") where.isFeatured = true;
+    if (category)              where.category    = { slug: category };
+    if (featured === "true")   where.isFeatured  = true;
+    if (videoOnly === "true")  where.videoUrl    = { not: null };
+
+    // Validate contentType against the enum values expected by Prisma
+    const VALID_CONTENT_TYPES = ["ARTICLE", "VIDEO"];
+    if (contentType && VALID_CONTENT_TYPES.includes(contentType)) {
+      where.contentType = contentType;
+    }
 
     const [articles, total] = await Promise.all([
       prisma.article.findMany({
         where,
         skip,
         take: limit,
-        orderBy: { publishedAt: "desc" },
+        // Some video articles may not have publishedAt — fall back to createdAt
+        orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
         select: {
-          id: true,
-          title: true,
-          slug: true,
-          excerpt: true,
-          label: true,
-          isFeatured: true,
-          viewCount: true,
-          readTime: true,
-          publishedAt: true,
-          status: true,
-          authorId: true,
-          categoryId: true,
-          category: { select: { name: true, slug: true, color: true } },
-          author: { select: { id: true, fullName: true, username: true, avatarUrl: true } },
-          featuredImage: { select: { url: true, cdnUrl: true, altText: true } },
-          tags: { select: { tag: { select: { name: true, slug: true } } } },
+          id:           true,
+          title:        true,
+          slug:         true,
+          excerpt:      true,
+          content:      true,
+          label:        true,
+          isFeatured:   true,
+          viewCount:    true,
+          readTime:     true,
+          publishedAt:  true,
+          createdAt:    true,
+          status:       true,
+          authorId:     true,
+          categoryId:   true,
+          videoUrl:     true,   // ← required for VideoNewsTable & VideoModal
+          ogImageUrl:   true,   // ← thumbnail fallback
+          contentType:  true,   // ← separates ARTICLE from VIDEO
+          category:     { select: { name: true, slug: true, color: true } },
+          author:       { select: { id: true, fullName: true, username: true, avatarUrl: true } },
+          featuredImage:{ select: { url: true, cdnUrl: true, altText: true } },
+          tags:         { select: { tag: { select: { name: true, slug: true } } } },
         },
       }),
       prisma.article.count({ where }),
@@ -56,7 +73,7 @@ export async function GET(req: NextRequest) {
 
     const responseArticles = articles.map(art => ({
       ...art,
-      viewCount: Number(art.viewCount)
+      viewCount: Number(art.viewCount),
     }));
 
     return apiResponse(responseArticles, 200, {
@@ -65,9 +82,13 @@ export async function GET(req: NextRequest) {
       total,
       totalPages: Math.ceil(total / limit),
     });
-  } catch (err) {
-    console.error("[ARTICLES GET]", err);
-    return apiError("Internal server error", 500);
+  } catch (err: any) {
+    console.error("[ARTICLES GET] Error details:", {
+      message: err?.message,
+      code: err?.code,       // Prisma error code e.g. P2025
+      meta: err?.meta,
+    });
+    return apiError(err?.message || "Internal server error", 500);
   }
 }
 
@@ -88,6 +109,7 @@ const CreateArticleSchema = z.object({
   expiresAt: z.string().optional().nullable(),
   featuredImageUrl: z.string().optional().nullable(),
   videoUrl: z.union([z.string().url(), z.literal(""), z.null()]).optional().transform((v) => (v === "" ? null : v)),
+  contentType: z.enum(["ARTICLE", "VIDEO"]).optional(),
 });
 
 export const POST = withAuth(
@@ -133,8 +155,8 @@ export const POST = withAuth(
       const finalPublishedAt = finalStatus === "PUBLISHED" ? new Date() : null;
       const finalEditorId = (finalStatus === "PUBLISHED" && isEditorOrAdmin) ? user.userId : null;
       const finalExpiresAt = expiresAt ? new Date(expiresAt) : null;
-      // Default to current user if not provided
       const finalAuthorId = authorId || user.userId;
+      const finalContentType = parsed.data.contentType || "ARTICLE";
 
       const article = await prisma.article.create({
         data: {
@@ -147,6 +169,7 @@ export const POST = withAuth(
           slug,
           categoryId,
           label: label || "NORMAL",
+          contentType: finalContentType,
           metaTitle,
           metaDesc,
           readTime,
@@ -184,6 +207,7 @@ export const POST = withAuth(
         viewCount: Number(article.viewCount)
       };
 
+      revalidatePath("/");
       return apiResponse(responseData, 201);
     } catch (err: any) {
       console.error("[ARTICLES POST] System Error:", err);

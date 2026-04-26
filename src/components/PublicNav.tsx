@@ -59,26 +59,6 @@ export default function PublicNav({ categories }: { categories: Category[] }) {
           >
             Video
           </Link>
-          <Link
-            href="/foto"
-            className={`flex-shrink-0 px-4 py-3.5 text-sm font-bold tracking-wide uppercase transition-all whitespace-nowrap border-b-[3px] ${
-              isActive("/foto")
-                ? "text-accent border-accent font-black"
-                : "text-gray-700 border-transparent hover:text-accent hover:border-accent"
-            }`}
-          >
-            Foto
-          </Link>
-          <Link
-            href="/cek-fakta"
-            className={`flex-shrink-0 px-4 py-3.5 text-sm font-bold tracking-wide uppercase transition-all whitespace-nowrap border-b-[3px] ${
-              isActive("/cek-fakta")
-                ? "text-accent border-accent font-black"
-                : "text-gray-700 border-transparent hover:text-accent hover:border-accent"
-            }`}
-          >
-            Cek Fakta
-          </Link>
         </nav>
       </div>
     </div>

@@ -34,6 +34,7 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
   const navLinks = [
     { name: "Dashboard", href: "/cms" },
     { name: "Artikel", href: "/cms/articles" },
+    { name: "Berita Video", href: "/cms/video-news" },
     { name: "Kategori", href: "/cms/categories" },
   ];
 

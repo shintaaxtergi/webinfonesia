@@ -73,11 +73,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             return (
               <Link href={`/${categorySlug}/${article.slug}`} key={article.id} className="group flex flex-col h-full bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden">
                 <div className="relative h-56 w-full overflow-hidden">
-                  <Image 
+                  <img 
                     src={imageUrl} 
                     alt={article.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                   />
                   {article.label !== "NORMAL" && (
                     <div className="absolute top-4 left-4">

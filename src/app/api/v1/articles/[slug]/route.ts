@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { apiResponse, apiError, withAuth, slugify } from "@/lib/middleware";
 import { JwtPayload, getTokenFromHeader, verifyToken } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 type RouteCtx = { params: Promise<{ slug: string }> };
 
@@ -25,6 +26,7 @@ const articleSelect = {
   publishedAt: true,
   expiresAt: true,
   videoUrl: true,
+  contentType: true,
   categoryId: true,   // needed so the edit form can pre-select the category
   createdAt: true,
   updatedAt: true,
@@ -92,6 +94,7 @@ const UpdateArticleSchema = z.object({
   videoUrl: z.union([z.string().url(), z.literal(""), z.null()]).optional().transform((v) => (v === "" ? null : v)),
   // URL of image to link as featuredImage (optional; can be a blob/data URL for direct save)
   featuredImageUrl: z.string().optional().nullable(),
+  contentType: z.enum(["ARTICLE", "VIDEO"]).optional(),
 });
 
 export const PUT = withAuth(
@@ -192,6 +195,7 @@ export const PUT = withAuth(
         ...updated,
         viewCount: Number(updated.viewCount)
       };
+      revalidatePath("/");
       return apiResponse(responseData);
     } catch (err) {
       console.error("[ARTICLE PUT]", err);
@@ -224,6 +228,7 @@ export const DELETE = withAuth(
       await prisma.article.delete({ 
         where: { id: article.id }
       });
+      revalidatePath("/");
       return apiResponse({ message: "Artikel berhasil dihapus permanen" });
     } catch (err) {
       console.error("[ARTICLE DELETE]", err);

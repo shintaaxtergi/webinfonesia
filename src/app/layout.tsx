@@ -12,6 +12,8 @@ const dmSans = DM_Sans({
   variable: "--font-body",
 });
 
+import { NextAuthProvider } from "./providers";
+
 export const metadata: Metadata = {
   title: "InfoNesia — Portal Berita Digital Indonesia",
   description: "Portal berita digital yang menyajikan informasi aktual, terpercaya, dan berkualitas tinggi.",
@@ -25,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className={`${playfair.variable} ${dmSans.variable} font-sans antialiased`}>
-        {children}
+        <NextAuthProvider>
+          {children}
+        </NextAuthProvider>
       </body>
     </html>
   );

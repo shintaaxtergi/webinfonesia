@@ -2,9 +2,9 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import ArticleForm, { ArticleFormData } from "../../_components/ArticleForm";
+import ArticleForm, { ArticleFormData } from "../../../articles/_components/ArticleForm";
 
-export default function EditArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+export default function EditVideoNewsPage({ params }: { params: Promise<{ slug: string }> }) {
   const router = useRouter();
   const { slug } = use(params);
   
@@ -16,9 +16,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ slug: st
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("infonesia_token");
-        const authHeaders: HeadersInit = token
-          ? { Authorization: `Bearer ${token}` }
-          : {};
+        const authHeaders: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
 
         const artRes = await fetch(`/api/v1/articles/${slug}`, { headers: authHeaders });
         const artData = await artRes.json();
@@ -36,12 +34,11 @@ export default function EditArticlePage({ params }: { params: Promise<{ slug: st
             featuredImageUrl: article.featuredImage?.url || article.ogImageUrl || "",
             videoUrl: article.videoUrl || "",
             expiresAt: article.expiresAt ? new Date(article.expiresAt).toISOString().split('T')[0] : "",
-            contentType: article.contentType || "ARTICLE"
+            contentType: article.contentType || "VIDEO"
           });
         }
       } catch (err) {
-        console.error(err);
-        alert("Gagal mengambil data artikel");
+        alert("Gagal mengambil data video");
       } finally {
         setLoading(false);
       }
@@ -54,11 +51,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ slug: st
     setIsSubmitting(true);
     const token = localStorage.getItem("infonesia_token");
 
-    // Process tags
-    const tagArray = formData.tags
-      .split(",")
-      .map(t => t.trim())
-      .filter(t => t.length > 0);
+    const tagArray = formData.tags.split(",").map(t => t.trim()).filter(t => t.length > 0);
 
     try {
       const res = await fetch(`/api/v1/articles/${slug}`, {
@@ -78,21 +71,17 @@ export default function EditArticlePage({ params }: { params: Promise<{ slug: st
           videoUrl: formData.videoUrl || undefined,
           featuredImageUrl: formData.featuredImageUrl || undefined,
           expiresAt: formData.expiresAt || undefined,
-          contentType: formData.contentType || "ARTICLE"
+          contentType: formData.contentType || "VIDEO"
         })
       });
 
-      console.log("[UPDATE] Response status:", res.status);
-
       if (res.ok) {
-        router.push("/cms/articles");
+        router.push("/cms/video-news");
       } else {
         const data = await res.json();
-        console.error("[UPDATE] API Error:", data);
-        alert("Gagal memperbarui artikel:\n" + (data.errors?.join("\n") || data.message || "Unknown error"));
+        alert("Gagal memperbarui video:\n" + (data.errors?.join("\n") || data.message || "Unknown error"));
       }
     } catch (err) {
-      console.error(err);
       alert("Terjadi kesalahan sistem");
     } finally {
       setIsSubmitting(false);
@@ -110,9 +99,9 @@ export default function EditArticlePage({ params }: { params: Promise<{ slug: st
       initialData={initialData}
       onSubmit={handleSubmit}
       isSubmitting={isSubmitting}
-      pageTitle="Edit Artikel"
-      pageDescription="Sesuaikan konten, durasi, dan media berita Anda."
-      contentType={(initialData?.contentType as "ARTICLE" | "VIDEO") || "ARTICLE"}
+      pageTitle="Edit Berita Video"
+      pageDescription="Sesuaikan konten, durasi, dan media berita video Anda."
+      contentType="VIDEO"
     />
   );
 }

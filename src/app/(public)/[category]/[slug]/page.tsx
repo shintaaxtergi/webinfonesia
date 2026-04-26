@@ -2,6 +2,8 @@ import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import BackButton from "@/components/BackButton";
+import CommentSection from "@/components/CommentSection";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=1200&auto=format&fit=crop";
 
@@ -17,7 +19,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ catego
       author: true,
       category: true,
       featuredImage: true,
-      tags: { include: { tag: true } }
+      tags: { include: { tag: true } },
+      comments: { 
+        include: { user: { select: { id: true, fullName: true, avatarUrl: true } } },
+        orderBy: { createdAt: 'desc' }
+      }
     }
   });
 
@@ -70,8 +76,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ catego
   const videoEmbedUrl = article.videoUrl ? getEmbedUrl(article.videoUrl) : null;
 
   return (
-    <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* HEADER */}
+    <main className="pb-12">
+      <BackButton categoryName={article.category?.name} categorySlug={article.category?.slug} />
+
+      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* HEADER */}
       <header className="mb-10 text-center max-w-3xl mx-auto">
         <div className="mb-6">
           <Link 
@@ -241,6 +250,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ catego
           </div>
         </section>
       )}
-    </article>
+
+      {/* COMMENT SECTION */}
+      <CommentSection 
+        articleId={article.id} 
+        initialComments={article.comments as any} 
+        // userId={session?.user?.id} // Uncomment ini jika sudah setup next-auth
+      />
+
+      </article>
+    </main>
   );
 }

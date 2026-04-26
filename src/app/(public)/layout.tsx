@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import PublicNav from "@/components/PublicNav";
+import TrendingBar from "@/components/TrendingBar";
 
 async function Header() {
   const categories = await prisma.category.findMany({
@@ -81,35 +82,7 @@ async function Header() {
       <PublicNav categories={categories} />
 
       {/* ── TRENDING BAR ── */}
-      <div className="bg-gray-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 py-2.5 overflow-x-auto scrollbar-none">
-            {/* Trending label */}
-            <div className="flex-shrink-0 flex items-center gap-1.5 text-accent font-bold text-sm">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              <span>Trending</span>
-            </div>
-
-            {/* Divider */}
-            <div className="flex-shrink-0 w-px h-5 bg-gray-300" />
-
-            {/* Trending topics */}
-            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
-              {trendingTopics.map((topic, i) => (
-                <Link
-                  key={i}
-                  href={`/search?q=${encodeURIComponent(topic)}`}
-                  className="flex-shrink-0 px-3 py-1 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-full hover:border-accent hover:text-accent transition-all whitespace-nowrap"
-                >
-                  {topic}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <TrendingBar topics={trendingTopics} />
     </header>
   );
 }
